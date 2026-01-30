@@ -19,11 +19,11 @@ export class ReservaData implements OnInit {
     titulo: 'nombreRecurso',
     subtitulo: 'fecha',
     horaInicio: 'horaInicio',
-    horaFin:  'horaFin',
+    horaFin: 'horaFin',
     descripcion: 'motivo',
     imagenUrl: 'imagenUrl',
     estado: 'estado',
-    status: 'activo'
+    status: 'activo',
   };
 
   //! Data
@@ -35,5 +35,37 @@ export class ReservaData implements OnInit {
 
   cargarData() {
     this.reservaServicio.getReservasDataFull().subscribe((data) => this.reservas.set(data));
+  }
+
+  eliminarData(id: number) {
+    this.reservaServicio.deleteReserva(id).subscribe(() => {
+      console.log('eliminado');
+      this.cargarData();
+    });
+  }
+
+  buscarDato(event: any) {
+    const texto = event.target.value.toLowerCase().trim();
+
+    if (texto === '') {
+      this.cargarData();
+      return;
+    }
+
+    this.reservaServicio.buscarReservasPorMotivo(texto).subscribe((res) => {
+      this.reservas.set(res);
+    });
+  }
+
+  FiltarDato(event: any) {
+    const texto = event.target.value.trim();
+
+    if (texto === '') {
+      this.cargarData();
+      return;
+    }
+    this.reservaServicio.filtarReservaPorEstado(texto).subscribe((res) => {
+      this.reservas.set(res);
+    });
   }
 }

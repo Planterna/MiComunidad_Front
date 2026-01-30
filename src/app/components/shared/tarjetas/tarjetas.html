@@ -1,23 +1,39 @@
-<div class="flex flex-row gap-3 ">
-  <label class=" w-full input input-bordered flex items-center gap-2 mb-5">
-    <input type="text" class="grow" placeholder="Search" />
+<div class="flex flex-row gap-3 font-montserrat">
+  <label class="w-full input input-bordered input-primary flex items-center gap-2 mb-5">
+    <input type="text" class="grow" placeholder="Search" (input)="buscar.emit($event)" />
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 16 16"
       fill="currentColor"
-      class="h-4 w-4 opacity-70">
+      class="h-4 w-4 opacity-70"
+    >
       <path
         fill-rule="evenodd"
         d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-        clip-rule="evenodd" />
+        clip-rule="evenodd"
+      />
     </svg>
   </label>
-  <button class="btn btn-primary item">
-    Nuevo
-  </button>
+
+  <button [routerLink]="['formulario']" class="btn btn-primary item">Nuevo</button>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl m-auto font-montserrat">
+<div class="flex w-full font-montserrat justify-center items-center m-auto">
+  @if (dataEstado()) {
+    <div class="mb-4 font-medium">
+      <select class="select select-primary w-full max-w-xs" (input)="filtrar.emit($event)">
+        <option value="" selected>Selecciona Estado</option>
+        <option value="Aprobada">Aprobada</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Rechazada">Rechazada</option>
+      </select>
+    </div>
+  }
+</div>
+
+<div
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl m-auto font-montserrat"
+>
   @for (item of data(); track $index) {
     <div
       class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-300"
@@ -46,16 +62,27 @@
           </p>
         }
         @if (configCard().descripcion && item[configCard().descripcion!]) {
-          <p class="text-sm opacity-70">
+          <p class="text-md opacity-70">
             {{ item[configCard().descripcion!] }} <br />
-            {{ item[configCard().estado!] }} <br />
-            <span class="text-xl font-bold" [style.color]="item[configCard().status!] === true ? 'green' : 'red'">
+            <span
+              class="text-md"
+              [style.color]="item[configCard().estado!] === 'Aprobada' ? 'green' : 'red'"
+            >
+              {{ item[configCard().estado!] }} <br />
+            </span>
+            <span
+              class="text-xl font-bold"
+              [style.color]="item[configCard().status!] === true ? 'green' : 'red'"
+            >
               {{ item[configCard().status!] ? 'Activo' : 'Desactivado' }}
             </span>
           </p>
         }
         <div class="card-actions justify-center mt-4">
-          <button [routerLink]="['formulario/', item[configCard().id!]]" class="btn btn-circle btn-outline">
+          <button
+            [routerLink]="['formulario/', item[configCard().id!]]"
+            class="btn btn-circle btn-outline"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -73,7 +100,10 @@
               />
             </svg>
           </button>
-          <button class="btn btn-circle btn-outline">
+          <button
+            class="btn btn-circle btn-outline"
+            (click)="eliminar.emit(item[configCard().id!])"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"

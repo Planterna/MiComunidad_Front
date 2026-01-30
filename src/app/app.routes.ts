@@ -15,6 +15,10 @@ export const routes: Routes = [
     component: ReservaVista,
   },
   {
+    path: 'reserva/formulario',
+    component: ReservaFormulario,
+  },
+  {
     path: 'reserva/formulario/:id',
     component: ReservaFormulario,
   },

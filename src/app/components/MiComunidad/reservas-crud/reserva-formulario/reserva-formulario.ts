@@ -40,7 +40,7 @@ export class ReservaFormulario implements OnInit {
   ngOnInit(): void {
     const id = this.activateRoute.snapshot.params['id'];
 
-    if (Number(id) !== null) {
+    if (id !== null && id > 0) {
       this.editingId.set(+id);
       this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data));
       this.reservaService.getReservasForId(+id).subscribe((data) => {
@@ -49,6 +49,8 @@ export class ReservaFormulario implements OnInit {
         this.cargarNombreUser(data.usuarioId);
         this.abrirEdicion(data);
       });
+    } else {
+      this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data));
     }
   }
 
@@ -92,14 +94,14 @@ export class ReservaFormulario implements OnInit {
         // this.info.set('success');
       });
       setTimeout(() => {
-        this.router.navigate(['/reservas']);
+        this.router.navigate(['/reserva']);
       }, 4000);
     } else {
       // this.reservaService.createReserva(datos).subscribe(() => {
       //   // this.info.set('success');
       // });
       setTimeout(() => {
-        this.router.navigate(['/reservas']);
+        this.router.navigate(['/reserva']);
       }, 4000);
     }
   }

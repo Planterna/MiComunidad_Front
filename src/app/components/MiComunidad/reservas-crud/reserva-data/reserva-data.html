@@ -1,1 +1,8 @@
-<app-tarjetas [data]="reservas()" [configCard]="confReserva"/>
+<app-tarjetas
+  [data]="reservas()"
+  [configCard]="confReserva"
+  [dataEstado]="true"
+  (buscar)="buscarDato($event)"
+  (filtrar)="FiltarDato($event)"
+  (eliminar)="eliminarData($event)"
+/>
