@@ -8,7 +8,7 @@ export interface ReservaResponse {
   horaInicio: string;
   horaFin: string;
   motivo: string;
-  estado: string;
+  estado?: string;
   activo?: boolean;
   fechaCreacion?: Date | string;
   fechaModificacion?: Date | string;

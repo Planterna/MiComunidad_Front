@@ -1,8 +1,16 @@
+<app-modals-alert
+  [modalId]="modalId"
+  [titulo]="tituloModal()"
+  (confirmar)="eliminarData()"
+  [data]="dataModal()"
+/>
+
 <app-tarjetas
   [data]="reservas()"
   [configCard]="confReserva"
   [dataEstado]="true"
   (buscar)="buscarDato($event)"
   (filtrar)="FiltarDato($event)"
-  (eliminar)="eliminarData($event)"
+  (eliminar)="abrirConfirmacion($event)"
+  (activar)="activarData($event)"
 />

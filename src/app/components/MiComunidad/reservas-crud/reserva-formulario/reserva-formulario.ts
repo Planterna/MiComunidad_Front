@@ -6,13 +6,16 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReservaResponse, Estado } from '../../../../models/reserva.model';
 import { RecursoService } from '../../../../services/recurso.service';
 import { RecursoResponse } from '../../../../models/recurso.model';
+import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
+import { dataInformation } from '../../../../models/tarjetas-config.model';
 
 @Component({
   selector: 'app-reserva-formulario',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ModalsAlert],
   templateUrl: './reserva-formulario.html',
 })
 export class ReservaFormulario implements OnInit {
+  //!DI
   fb = inject(FormBuilder);
   activateRoute = inject(ActivatedRoute);
   router = inject(Router);
@@ -20,12 +23,22 @@ export class ReservaFormulario implements OnInit {
   recursoService = inject(RecursoService);
   reservaService = inject(ReservaService);
 
+  //!Config
+  modalId = 'modal-reserva';
+  tituloModal = signal<string>('');
+  dataModal = signal<dataInformation | null>(null);
+  // reservaIdForUpdate = signal<number | null>(null);
+
+  //! Data
   reserva = signal<ReservaResponse | null>(null);
   recursoNombres = signal<RecursoResponse[] | null>(null);
   editingId = signal<number>(0);
   nombreUS = signal<string>('');
   valueUs = signal<number>(0);
+  rolId = signal<string>('Administrador'); //! Importante ver con token JWt
 
+
+  //!Formulario
   reservaForm = this.fb.group({
     usuarioId: ['', [Validators.required]],
     recursoId: ['', [Validators.required]],
@@ -37,6 +50,7 @@ export class ReservaFormulario implements OnInit {
     activo: [false, []],
   });
 
+  //! Crud
   ngOnInit(): void {
     const id = this.activateRoute.snapshot.params['id'];
 
@@ -75,34 +89,85 @@ export class ReservaFormulario implements OnInit {
 
   guardar() {
     let data = this.reservaForm.value;
-    if (this.editingId() !== 0) {
-      let reserva: ReservaResponse = {
-        id: this.editingId(),
-        usuarioId: Number(data.usuarioId),
-        recursoId: Number(data.recursoId),
-        fecha: data.fecha!,
-        horaInicio: data.horaInicio!,
-        horaFin: data.horaFin!,
-        motivo: data.motivo!,
-        estado: data.estado!,
-        activo: data.activo!,
-        fechaCreacion: new Date().toISOString(),
-        fechaModificacion: new Date().toISOString(),
-      };
-      this.reservaService.updateReserva(reserva).subscribe(() => {
-        console.log({ reserva });
-        // this.info.set('success');
-      });
-      setTimeout(() => {
-        this.router.navigate(['/reserva']);
-      }, 4000);
+    let reserva: ReservaResponse = {
+      usuarioId: Number(data.usuarioId),
+      recursoId: Number(data.recursoId),
+      fecha: data.fecha!,
+      horaInicio: data.horaInicio!,
+      horaFin: data.horaFin!,
+      estado: data.estado!,
+      motivo: data.motivo!,
+      activo: data.activo!,
+      fechaCreacion: new Date().toISOString(),
+      fechaModificacion: new Date().toISOString(),
+    };
+    if (this.editingId() !== 0 ) {
+      if (reserva !== null) {
+        if(this.rolId() === 'Vecino' ){
+          this.reservaService.updateReserva({ ...reserva, id: this.editingId()!, estado: 'Pendiente' }).subscribe(() => {
+            this.modalStatusSuccess();
+          });
+          setTimeout(() => {
+            this.router.navigate(['/reserva']);
+          }, 3000);
+        }
+        if (this.rolId() === 'Administrador' || this.rolId() === 'Encargado') {
+          this.reservaService.updateReserva({ ...reserva, id: this.editingId()! }).subscribe(() => {
+            this.modalStatusSuccess();
+          });
+          setTimeout(() => {
+            this.router.navigate(['/reserva']);
+          }, 3000);
+        }
+
+      } else {
+        this.modalStatusError();
+      }
     } else {
-      // this.reservaService.createReserva(datos).subscribe(() => {
-      //   // this.info.set('success');
-      // });
-      setTimeout(() => {
-        this.router.navigate(['/reserva']);
-      }, 4000);
+      if (reserva !== null) {
+        this.reservaService.createReserva(reserva).subscribe(() => {
+          this.modalStatusSuccess();
+          setTimeout(() => {
+            this.router.navigate(['/reserva']);
+          }, 3000);
+        });
+      } else {
+        this.modalStatusError();
+      }
     }
+  }
+
+  //! Modal
+  abrirConfirmacion() {
+    this.tituloModal.set('Confirmar');
+    this.dataModal.set('confirm');
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+  }
+
+  modalStatusSuccess() {
+    this.tituloModal.set('Éxitoso');
+    this.dataModal.set('success');
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+      }
+    }, 1500);
+  }
+
+  modalStatusError() {
+    this.tituloModal.set('Error');
+    this.dataModal.set('error');
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+      }
+    }, 1500);
   }
 }

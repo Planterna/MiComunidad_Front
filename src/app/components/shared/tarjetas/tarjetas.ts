@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { ReservaResponse } from '../../../models/reserva.model';
 import { tarjetasConfig } from '../../../models/tarjetas-config.model';
 import { RouterLink } from '@angular/router';
@@ -13,7 +13,10 @@ export class Tarjetas {
   configCard = input.required<tarjetasConfig>();
   dataEstado = input<boolean>();
 
+  rolId = signal<string>('Administrador'); //! validar luego
+
   buscar = output<any>();
   filtrar = output<any>();
   eliminar = output<any>();
+  activar = output<any>();
 }

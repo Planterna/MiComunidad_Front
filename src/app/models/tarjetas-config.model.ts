@@ -9,3 +9,6 @@ export interface tarjetasConfig {
   estado?: string;
   status? : string;
 }
+
+
+export type dataInformation = 'success' | 'error' | 'confirm';

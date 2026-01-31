@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
-import { ReservaFullResponse, ReservaResponse } from '../models/reserva.model';
+import { ReservaFullResponse, ReservaResponse, Estado } from '../models/reserva.model';
 import { map, Observable, switchMap } from 'rxjs';
 
 const baseUrl = environment.baseUrl;
@@ -39,8 +39,18 @@ export class ReservaService {
     );
   }
 
+  activedReserva(id: number): Observable<ReservaResponse> {
+    return this.getReservasForId(id).pipe(
+      map((reserva) => ({
+        ...reserva,
+        activo: true,
+        fechaModificacion: new Date().toISOString(),
+      })),
+      switchMap((body) => this.http.put<ReservaResponse>(`${baseUrl}/Reservas/${id}`, body)),
+    );
+  }
+
   updateReserva(reserva: ReservaResponse): Observable<ReservaResponse> {
-    console.log({ reserva });
     const urlReservasEditar = `${baseUrl}/Reservas/${reserva.id}`;
     return this.http.put<ReservaResponse>(urlReservasEditar, reserva);
   }

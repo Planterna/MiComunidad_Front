@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Tarjetas } from '../../../shared/tarjetas/tarjetas';
 import { ReservaService } from '../../../../services/reserva.service';
 import { ReservaResponse } from '../../../../models/reserva.model';
-import { tarjetasConfig } from '../../../../models/tarjetas-config.model';
+import { dataInformation, tarjetasConfig } from '../../../../models/tarjetas-config.model';
+import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
 
 @Component({
   selector: 'app-reserva-data',
-  imports: [Tarjetas],
+  imports: [Tarjetas, ModalsAlert],
   templateUrl: './reserva-data.html',
 })
 export class ReservaData implements OnInit {
@@ -25,10 +26,15 @@ export class ReservaData implements OnInit {
     estado: 'estado',
     status: 'activo',
   };
+  modalId = 'modal-reserva';
+  tituloModal = signal<string>('');
+  dataModal = signal<dataInformation | null>(null);
+  reservaIdForEliminated = signal<number | null>(null);
 
   //! Data
   reservas = signal<ReservaResponse[]>([]);
 
+  //! Metodos Crud
   ngOnInit(): void {
     this.cargarData();
   }
@@ -37,13 +43,28 @@ export class ReservaData implements OnInit {
     this.reservaServicio.getReservasDataFull().subscribe((data) => this.reservas.set(data));
   }
 
-  eliminarData(id: number) {
-    this.reservaServicio.deleteReserva(id).subscribe(() => {
-      console.log('eliminado');
-      this.cargarData();
-    });
+  eliminarData() {
+    const id = this.reservaIdForEliminated();
+    if (id) {
+      this.reservaServicio.deleteReserva(id).subscribe(() => {
+        this.modalStatusSuccess();
+      });
+    } else {
+      this.modalStatusError();
+    }
   }
 
+  activarData(valueId: number) {
+    if (valueId) {
+      this.reservaServicio.activedReserva(valueId).subscribe(() => {
+        this.modalStatusSuccess();
+      });
+    } else {
+      this.modalStatusError();
+    }
+  }
+
+  //! Filtro y Busqueda
   buscarDato(event: any) {
     const texto = event.target.value.toLowerCase().trim();
 
@@ -67,5 +88,49 @@ export class ReservaData implements OnInit {
     this.reservaServicio.filtarReservaPorEstado(texto).subscribe((res) => {
       this.reservas.set(res);
     });
+  }
+
+  //! Modal
+  abrirConfirmacion(id: number) {
+    this.tituloModal.set('Confirmar Eliminación');
+    this.dataModal.set('confirm');
+    this.reservaIdForEliminated.set(id);
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+  }
+
+  modalStatusSuccess() {
+    this.tituloModal.set('Éxitoso');
+    this.dataModal.set('success');
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+    this.cargarData();
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+        this.reservaIdForEliminated.set(null);
+      }
+    }, 1500);
+  }
+
+  modalStatusError() {
+    this.tituloModal.set('Error');
+    this.dataModal.set('error');
+
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+    this.cargarData();
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+        this.reservaIdForEliminated.set(null);
+      }
+    }, 1500);
   }
 }

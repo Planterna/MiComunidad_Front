@@ -1,0 +1,71 @@
+<input type="checkbox" [id]="modalId()" class="modal-toggle" />
+<div class="modal" role="dialog">
+  <div class="modal-box shadow-2xl border border-base-300">
+    @if (data() !== null) {
+      <h3 class="text-xl font-bold font-montserrat text-primary mb-4">
+        {{ titulo() }}
+      </h3>
+
+      <div class="py-4 font-montserrat opacity-80">
+        <!--  -->
+        @if (data() === 'success') {
+          <div role="alert" class="alert alert-success">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>La tarea se realizo con éxito!</span>
+          </div>
+        }
+        <!--  -->
+        @if (data() === 'error') {
+          <div role="alert" class="alert alert-error">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>Error! La acción no se puedo realizar con éxito.</span>
+          </div>
+        }
+        <!--  -->
+        @if (data() === 'confirm') {
+          <p class="font-montserrat">
+            ¿Estás seguro de que deseas realizar esta <strong>acción</strong>?
+          </p>
+        }
+      </div>
+
+      <div class="modal-action gap-3">
+        @if (data() === 'confirm') {
+          <label [for]="modalId()" class="btn btn-error font-montserrat"> Cancelar </label>
+
+          <button class="btn btn-primary text-white font-montserrat px-6" (click)="confirmar.emit()">
+            Confirmar
+          </button>
+        }
+        @if (data() === 'success' || data() === 'error') {
+          <label [for]="modalId()" class="btn btn-primary font-montserrat"> OK </label>
+        }
+      </div>
+    }
+  </div>
+  <label class="modal-backdrop" [for]="modalId()">Close</label>
+</div>
