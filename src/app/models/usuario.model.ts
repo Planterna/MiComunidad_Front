@@ -5,6 +5,7 @@ export interface UsuarioResponse {
   nombres:              string;
   apellidos:            string;
   email:                string;
+  passHash:             string;
   telefono:             string;
   direccion:            string;
   rolId:                number;
