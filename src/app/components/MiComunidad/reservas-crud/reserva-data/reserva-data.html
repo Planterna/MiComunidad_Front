@@ -9,8 +9,10 @@
   [data]="reservas()"
   [configCard]="confReserva"
   [dataEstado]="true"
+  [rolUser]="rolUser()!"
   (buscar)="buscarDato($event)"
   (filtrar)="FiltarDato($event)"
   (eliminar)="abrirConfirmacion($event)"
   (activar)="activarData($event)"
+
 />

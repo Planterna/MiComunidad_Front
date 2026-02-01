@@ -8,6 +8,8 @@ import { RecursoService } from '../../../../services/recurso.service';
 import { RecursoResponse } from '../../../../models/recurso.model';
 import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
 import { dataInformation } from '../../../../models/tarjetas-config.model';
+import { AuthService } from '../../../../services/auth.service';
+import { Roles, UsuarioResponse } from '../../../../models/usuario.model';
 
 @Component({
   selector: 'app-reserva-formulario',
@@ -22,6 +24,7 @@ export class ReservaFormulario implements OnInit {
   usuarioService = inject(UsuarioService);
   recursoService = inject(RecursoService);
   reservaService = inject(ReservaService);
+  authService = inject(AuthService);
 
   //!Config
   modalId = 'modal-reserva';
@@ -32,10 +35,11 @@ export class ReservaFormulario implements OnInit {
   //! Data
   reserva = signal<ReservaResponse | null>(null);
   recursoNombres = signal<RecursoResponse[] | null>(null);
+  usuarioNombres = signal<UsuarioResponse[] | null>(null);
   editingId = signal<number>(0);
   nombreUS = signal<string>('');
-  valueUs = signal<number>(0);
-  rolId = signal<string>('Administrador'); //! Importante ver con token JWt
+  usuarioId= signal<number | null>(null);
+  rolUser = signal<Roles | null>(null); 
 
 
   //!Formulario
@@ -46,33 +50,49 @@ export class ReservaFormulario implements OnInit {
     horaInicio: ['', [Validators.required]],
     horaFin: ['', [Validators.required]],
     motivo: ['', [Validators.required, Validators.minLength(5)]],
-    estado: ['', [Validators.required]],
+    estado: ['', []],
     activo: [false, []],
   });
 
   //! Crud
   ngOnInit(): void {
-    const id = this.activateRoute.snapshot.params['id'];
+    const idReserva = this.activateRoute.snapshot.params['id'];
+    const rol = this.authService.getRole();
+    this.rolUser.set(rol);
+    const id = this.authService.getId();
+    this.usuarioId.set(id);
+    console.log(rol, id)
 
-    if (id !== null && id > 0) {
-      this.editingId.set(+id);
-      this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data));
-      this.reservaService.getReservasForId(+id).subscribe((data) => {
-        this.valueUs.set(data.usuarioId);
+    if (idReserva !== null && idReserva > 0) {
+    
+     this.editingId.set(+idReserva);
+
+      
+      this.reservaService.getReservasForId(+idReserva).subscribe((data) => {
         this.reserva.set(data);
-        this.cargarNombreUser(data.usuarioId);
+        this.cargarData(rol!);
+
         this.abrirEdicion(data);
       });
     } else {
-      this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data));
+      this.cargarData(this.rolUser()!);
     }
   }
 
-  cargarNombreUser(id: number) {
-    return this.usuarioService
-      .getNombreUsuarioPorId(id)
-      .subscribe((data) => this.nombreUS.set(data));
+
+cargarData(rol: Roles){
+
+  if((rol === 'Administrador' || rol === 'Encargado')  ){
+    this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data))
+    this.usuarioService.getNombreUsuarioCompleto().subscribe((data) => this.usuarioNombres.set(data))  
   }
+
+  if(rol === 'Vecino'){
+    this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data))
+    this.usuarioService.getNombreUsuarioPorId(this.usuarioId()!).subscribe((data) => this.nombreUS.set(data))
+  }
+
+}
 
   abrirEdicion(reserva: ReservaResponse) {
     this.reservaForm.patchValue({
@@ -103,7 +123,7 @@ export class ReservaFormulario implements OnInit {
     };
     if (this.editingId() !== 0 ) {
       if (reserva !== null) {
-        if(this.rolId() === 'Vecino' ){
+        if(this.rolUser() === 'Vecino' ){
           this.reservaService.updateReserva({ ...reserva, id: this.editingId()!, estado: 'Pendiente' }).subscribe(() => {
             this.modalStatusSuccess();
           });
@@ -111,7 +131,7 @@ export class ReservaFormulario implements OnInit {
             this.router.navigate(['/reserva']);
           }, 3000);
         }
-        if (this.rolId() === 'Administrador' || this.rolId() === 'Encargado') {
+        if (this.rolUser() === 'Administrador' || this.rolUser() === 'Encargado') {
           this.reservaService.updateReserva({ ...reserva, id: this.editingId()! }).subscribe(() => {
             this.modalStatusSuccess();
           });

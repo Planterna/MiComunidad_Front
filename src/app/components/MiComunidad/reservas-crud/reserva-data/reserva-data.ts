@@ -4,6 +4,8 @@ import { ReservaService } from '../../../../services/reserva.service';
 import { ReservaResponse } from '../../../../models/reserva.model';
 import { dataInformation, tarjetasConfig } from '../../../../models/tarjetas-config.model';
 import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
+import { AuthService } from '../../../../services/auth.service';
+import { Roles } from '../../../../models/usuario.model';
 
 @Component({
   selector: 'app-reserva-data',
@@ -13,6 +15,7 @@ import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
 export class ReservaData implements OnInit {
   //! DI
   reservaServicio = inject(ReservaService);
+  authServicio = inject(AuthService);
 
   //! Config
   confReserva: tarjetasConfig = {
@@ -33,15 +36,33 @@ export class ReservaData implements OnInit {
 
   //! Data
   reservas = signal<ReservaResponse[]>([]);
+  rolUser = signal<Roles | null>(null);
+  idUser = signal<number | null>(null);
+
 
   //! Metodos Crud
   ngOnInit(): void {
-    this.cargarData();
+      this.cargarData();
   }
 
   cargarData() {
-    this.reservaServicio.getReservasDataFull().subscribe((data) => this.reservas.set(data));
+    const rol = this.authServicio.getRole();
+    const id = this.authServicio.getId(); 
+    if(rol && id){
+      this.rolUser.set(rol);
+      this.idUser.set(id);
+      if((rol === 'Administrador' || rol === 'Encargado')){
+        this.reservaServicio.getReservasDataFull().subscribe((data) => this.reservas.set(data));
+      }
+      if(rol === 'Vecino' && id !== null){
+        this.reservaServicio.getReservasDataFullForId(id).subscribe((data) => {this.reservas.set(data)});
+      }
+
+
+    }
   }
+
+
 
   eliminarData() {
     const id = this.reservaIdForEliminated();

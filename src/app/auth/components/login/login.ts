@@ -1,18 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { ModalsAlert } from "../../../components/shared/modals-alert/modals-alert";
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.html',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ModalsAlert]
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './login.html',
 })
 export class LoginComponent {
 
   form: FormGroup;
+
+  // alert UI
+  alertType = signal<'success' | 'error' | null>(null);
+  alertMessage = signal<string>('');
 
   constructor(
     private auth: AuthService,
@@ -25,22 +28,39 @@ export class LoginComponent {
     });
   }
 
-  modalData: 'success' | 'error' | null = null;
-  modalId = 'loginModal';
-
   login() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.showError('Completa todos los campos correctamente');
+      return;
+    }
 
     this.auth.login(this.form.value).subscribe({
       next: () => {
-        this.modalData = 'success';
+        this.showSuccess('Inicio de sesión exitoso');
+        setTimeout(() => this.router.navigate(['/']), 1200);
       },
       error: () => {
-        this.modalData = 'error';
+        this.showError('Correo o contraseña incorrectos');
       }
     });
   }
 
+  private showSuccess(msg: string) {
+    this.alertType.set('success');
+    this.alertMessage.set(msg);
+    this.autoHide();
+  }
 
-  
+  private showError(msg: string) {
+    this.alertType.set('error');
+    this.alertMessage.set(msg);
+    this.autoHide();
+  }
+
+  private autoHide() {
+    setTimeout(() => {
+      this.alertType.set(null);
+      this.alertMessage.set('');
+    }, 2500);
+  }
 }

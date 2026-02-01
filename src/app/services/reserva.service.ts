@@ -24,8 +24,17 @@ export class ReservaService {
     return this.http.get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`);
   }
 
+  getReservasDataFullForId(id: number): Observable<ReservaFullResponse[]> {
+  return this.http
+    .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+    .pipe(
+      map(res => res.filter(r => r.usuarioId === id))
+    );
+}
+
+
   createReserva(reserva: ReservaResponse): Observable<ReservaResponse> {
-    return this.http.post<ReservaResponse>(baseUrl, reserva);
+    return this.http.post<ReservaResponse>(`${baseUrl}/Reservas`, reserva);
   }
 
   deleteReserva(id: number): Observable<ReservaResponse> {
