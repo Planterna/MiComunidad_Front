@@ -20,9 +20,18 @@
         <label class="label">
           <span class="label-text font-semibold">Nombre Vecino</span>
         </label>
-        <select class="select select-primary w-full" formControlName="usuarioId">
-          <option [value]="valueUs()">{{ nombreUS() }}</option>
-        </select>
+        @if(rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+          <select class="select select-primary w-full" formControlName="usuarioId">
+             @for (item of usuarioNombres(); track $index) {
+              <option [value]="item.id">{{ item.nombres }} {{item.apellidos}}</option>
+            }
+          </select>
+        }
+        @if(rolUser() === 'Vecino'){
+          <select class="select select-primary w-full" formControlName="usuarioId">
+              <option [value]="usuarioId()">{{ nombreUS() }}</option>
+          </select>
+        }
       </div>
       <div class="form-control">
         <label class="label">
@@ -79,7 +88,7 @@
         ></textarea>
       </div>
 
-      @if (rolId() === 'Administrador' || rolId() === 'Encargado') {
+      @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text font-semibold">Estado</span>
@@ -110,9 +119,9 @@
           <a routerLink="/reserva" class="btn btn-error"> Regresar </a>
         </div>
 
-        @if (!reservaForm.invalid && rolId() !== '') {
+        @if (!reservaForm.invalid && rolUser() !== null) {
           <div class="items-end">
-            <button type="submit" class="btn btn-primary">Actualizar Datos</button>
+            <button type="submit" class="btn btn-primary">Guardar Datos</button>
           </div>
         }
       </div>

@@ -13,7 +13,7 @@ export class Tarjetas {
   configCard = input.required<tarjetasConfig>();
   dataEstado = input<boolean>();
 
-  rolId = signal<string>('Vecino'); //! validar luego
+  rolUser = input.required<string>(); 
 
   buscar = output<any>();
   filtrar = output<any>();

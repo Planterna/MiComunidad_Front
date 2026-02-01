@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environments/environments';
+import { Roles } from '../models/usuario.model';
 
 interface LoginRequest {
   email: string;
@@ -25,41 +26,41 @@ export class AuthService {
   private readonly API_URL = `${baseUrl}/Auth`;
   private readonly TOKEN_KEY = 'token';
 
-  private loggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {}
 
+  authSignal = signal<boolean>(this.isLoggedIn());
+
   // =====================
   // LOGIN
   // =====================
-  login(data: LoginRequest) {
-    return this.http
-      .post<LoginResponse>(`${this.API_URL}/login`, data)
-      .pipe(
-        tap(res => {
-          localStorage.setItem(this.TOKEN_KEY, res.token);
-          this.loggedIn$.next(true);
-        })
-      );
-  }
+ login(data: LoginRequest) {
+  return this.http.post<LoginResponse>(`${this.API_URL}/login`, data).pipe(
+    tap(res => {
+      localStorage.setItem(this.TOKEN_KEY, res.token);
+      this.authSignal.set(true);
+    })
+  );
+}
   // =====================
   // REGISTER
   // =====================
   register(data: any) {
     return this.http.post(`${this.API_URL}/crear`, data);
-  }
+    }
+
 
   // =====================
   // LOGOUT
   // =====================
-  logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
-    this.loggedIn$.next(false);
-    this.router.navigate(['/login']);
-  }
+ logout() {
+  localStorage.removeItem(this.TOKEN_KEY);
+  this.authSignal.set(false);
+  this.router.navigate(['/login']);
+}
 
   // =====================
   // TOKEN
@@ -67,16 +68,11 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
-
-  hasToken(): boolean {
-    return !!this.getToken();
-  }
-
   // =====================
   // AUTH STATE (Navbar)
   // =====================
   isLoggedIn() {
-    return this.loggedIn$.asObservable();
+    return !!this.getToken();
   }
 
   // =====================
@@ -94,15 +90,34 @@ export class AuthService {
     }
   }
 
-  getRole(): string | null {
-    const user = this.getUserFromToken();
-    return user?.role || null;
+  getRole(): Roles | null {
+  const user = this.getUserFromToken();
+  if (!user) return null;
+
+  return (
+    user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] as Roles
+  ) ?? null;
+
   }
 
   getEmail(): string | null {
     const user = this.getUserFromToken();
-    return user?.email || null;
+    if (!user) return null;
+
+  return (
+    user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
+  ) ?? null;
   }
+
+  getId(): number | null {
+  const user = this.getUserFromToken();
+  if (!user) return null;
+
+  const id =
+    user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
+  return id ? Number(id) : null;
+}
 
   getNombreCompleto(): string | null {
   const user = this.getUserFromToken();

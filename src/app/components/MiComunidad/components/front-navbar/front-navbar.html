@@ -1,3 +1,4 @@
+
 <nav
   class="fixed top-0 z-[100] navbar bg-base-100/70 backdrop-blur-lg border-b border-base-content/10 px-4 font-montserrat transition-all"
 >
@@ -35,7 +36,7 @@
 
           <li><a routerLink="/historial-uso" class="py-3">Historial de Uso</a></li>
 
-          @if (auth.getRole() === 'Admin') {
+          @if (auth.getRole() === 'Administrador') {
             <li>
               <a routerLink="/admin" class="py-3 font-bold text-primary">
                 Panel Admin
@@ -120,6 +121,7 @@
       >
 
         @if (!auth.isLoggedIn()) {
+          
           <li>
             <a routerLink="/login" class="font-bold text-primary">
               Iniciar Sesión
