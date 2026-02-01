@@ -1,0 +1,63 @@
+<app-modals-alert
+  [modalId]="modalId"
+  titulo="Registro de usuario"
+  [data]="modalData"
+  (confirmar)="register()">
+</app-modals-alert>
+
+<div class="min-h-screen flex items-center justify-center bg-base-200 pt-24 font-montserrat">
+  <div class="card w-full max-w-2xl bg-base-100 shadow-2xl border border-base-300">
+    <div class="card-body">
+      <h2
+        class="text-3xl font-black text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+        Crear Cuenta
+      </h2>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="register()"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
+      >
+
+        <input class="input input-bordered" placeholder="Cédula" formControlName="cedula" />
+        <input class="input input-bordered" placeholder="Nombres" formControlName="nombres" />
+        <input class="input input-bordered" placeholder="Apellidos" formControlName="apellidos" />
+        <input class="input input-bordered" placeholder="Correo" formControlName="email" />
+
+        <input class="input input-bordered" placeholder="Teléfono" formControlName="telefono" />
+        <input class="input input-bordered" placeholder="Dirección" formControlName="direccion" />
+
+        <input
+          type="password"
+          class="input input-bordered md:col-span-2"
+          placeholder="Contraseña"
+          formControlName="passHash"
+        />
+
+        <div class="md:col-span-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            formControlName="aceptaNotificaciones"
+          />
+          <span class="text-sm">Acepto recibir notificaciones</span>
+        </div>
+
+        <button
+          class="btn btn-primary md:col-span-2 mt-4"
+          [disabled]="form.invalid"
+        >
+          Registrarse
+        </button>
+      </form>
+
+      <p class="text-center text-sm mt-4">
+        ¿Ya tienes cuenta?
+        <a routerLink="/login" class="link link-primary font-semibold">
+          Inicia sesión
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
