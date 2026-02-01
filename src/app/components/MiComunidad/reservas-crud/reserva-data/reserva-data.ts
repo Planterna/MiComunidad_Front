@@ -94,9 +94,22 @@ export class ReservaData implements OnInit {
       return;
     }
 
-    this.reservaServicio.buscarReservasPorMotivo(texto).subscribe((res) => {
-      this.reservas.set(res);
-    });
+    const rol = this.authServicio.getRole();
+    const id = this.authServicio.getId(); 
+    if(rol && id) {
+      if(rol === 'Vecino'){
+        this.reservaServicio.buscarReservasPorMotivoPorId(texto, id).subscribe((res) => {
+        this.reservas.set(res);
+        });
+      }
+      if(rol === 'Administrador' || rol === 'Encargado'){
+        this.reservaServicio.buscarReservasPorMotivo(texto).subscribe((res) => {
+        this.reservas.set(res);
+        });
+      }
+
+    }
+
   }
 
   FiltarDato(event: any) {
@@ -106,9 +119,22 @@ export class ReservaData implements OnInit {
       this.cargarData();
       return;
     }
-    this.reservaServicio.filtarReservaPorEstado(texto).subscribe((res) => {
-      this.reservas.set(res);
-    });
+    const rol = this.authServicio.getRole();
+    const id = this.authServicio.getId(); 
+
+    if(rol && id) {
+      if(rol === 'Vecino'){
+        this.reservaServicio.filtarReservaPorEstadoPorId(texto, id).subscribe((res) => {
+        this.reservas.set(res);
+        });
+      }
+      if(rol === 'Administrador' || rol === 'Encargado'){
+        this.reservaServicio.filtarReservaPorEstado(texto).subscribe((res) => {
+        this.reservas.set(res);
+        });
+      }
+
+    }
   }
 
   //! Modal

@@ -63,7 +63,14 @@
 
   <!-- DERECHA -->
   <div class="navbar-end gap-2 md:gap-4">
-
+    @if (auth.isLoggedIn() && auth.getRole() === 'Administrador') {
+        <a
+          routerLink="/usuario/dashboard"
+          class="btn btn-sm btn-primary"
+        >
+          Dashboard
+        </a>
+      }
     <!-- TOGGLE TEMA -->
     <label class="grid cursor-pointer place-items-center">
       <input
@@ -113,7 +120,7 @@
           </svg>
         </div>
       </div>
-
+      
       <ul
         tabindex="0"
         class="dropdown-content menu bg-base-100 rounded-box z-[1] mt-3 w-52 p-2
@@ -137,7 +144,7 @@
             {{ auth.getNombreCompleto() }}
           </li>
 
-          <li><a routerLink="/perfil">Ajustes</a></li>
+          <li><a routerLink="/perfil">Perfil</a></li>
 
           <div class="divider my-0"></div>
 

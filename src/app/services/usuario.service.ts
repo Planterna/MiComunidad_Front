@@ -24,5 +24,9 @@ export class UsuarioService {
     return this.http.get<UsuarioResponse[]>(`${url}/Usuarios`);
   }
 
+  getUsuarioPorId(id: number) {
+  return this.http.get<UsuarioResponse>(`${url}/Usuarios/${id}`);
+}
+
 }
       

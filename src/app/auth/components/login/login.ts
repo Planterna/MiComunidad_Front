@@ -10,21 +10,19 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './login.html',
 })
 export class LoginComponent {
-
   form: FormGroup;
 
-  // alert UI
   alertType = signal<'success' | 'error' | null>(null);
   alertMessage = signal<string>('');
 
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      passHash: ['', Validators.required]
+      passHash: ['', Validators.required],
     });
   }
 
@@ -37,14 +35,22 @@ export class LoginComponent {
     this.auth.login(this.form.value).subscribe({
       next: () => {
         this.showSuccess('Inicio de sesión exitoso');
-        setTimeout(() => this.router.navigate(['/']), 1200);
+
+        setTimeout(() => {
+          const rol = this.auth.getRole();
+
+          if (rol === 'Administrador') {
+            this.router.navigate(['/usuario/dashboard']);
+          } else {
+            this.router.navigate(['/']);
+          }
+        }, 1200);
       },
       error: () => {
         this.showError('Correo o contraseña incorrectos');
-      }
+      },
     });
   }
-
   private showSuccess(msg: string) {
     this.alertType.set('success');
     this.alertMessage.set(msg);
@@ -61,6 +67,6 @@ export class LoginComponent {
     setTimeout(() => {
       this.alertType.set(null);
       this.alertMessage.set('');
-    }, 2500);
+    }, 1500);
   }
 }

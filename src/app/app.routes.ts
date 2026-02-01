@@ -6,12 +6,25 @@ import { ReservaFormulario } from './components/MiComunidad/reservas-crud/reserv
 import { LoginComponent } from './auth/components/login/login';
 import { RegisterComponent } from './auth/components/register/register';
 import { AuthGuard } from './auth/guard/auth.guard';
+import { DashboardComponent } from './components/MiComunidad/usuario-crud/dashboard/dashboard';
+import { PerfilComponent } from './components/MiComunidad/usuario-crud/perfil/perfil';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomePage,
     pathMatch: 'full',
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['Administrador'] }
+  },
+  {
+    path: 'perfil',
+    component: PerfilComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'login',
@@ -38,11 +51,11 @@ export const routes: Routes = [
   },
   {
     path: 'recurso',
-    component: HomePage,
+    component: NotFoundPage,
   },
   {
     path: 'historial-uso',
-    component: HomePage,
+    component: NotFoundPage,
   },
   {
     path: 'noticia',

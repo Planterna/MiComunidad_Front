@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { environment } from '../../environments/environments';
 import { Roles } from '../models/usuario.model';
 
@@ -49,8 +49,8 @@ export class AuthService {
   // REGISTER
   // =====================
   register(data: any) {
-    return this.http.post(`${this.API_URL}/crear`, data);
-    }
+    return this.http.post(`${environment.baseUrl}/Auth/crear`, data);
+  }
 
 
   // =====================

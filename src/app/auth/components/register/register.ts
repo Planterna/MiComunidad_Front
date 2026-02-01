@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
     Direccion: [''],
     PassHash: ['', Validators.required],
     AceptaNotificaciones: [true],
-    RolId: 3
+
   });
 
   ngOnInit(): void {
@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit {
       Telefono: formData.Telefono || null,
       Direccion: formData.Direccion || null,
       AceptaNotificaciones: formData.AceptaNotificaciones ?? true,
-      RolId: 3// RolId y Estado no se envían: el backend los asigna automáticamente
+      
     };
 
     console.log('Datos que se enviarán al backend:', dataToSend);
@@ -90,6 +90,6 @@ export class RegisterComponent implements OnInit {
     setTimeout(() => {
       this.alertType.set(null);
       this.alertMessage.set('');
-    }, 3000);
+    }, 1500);
   }
 }

@@ -74,12 +74,33 @@ export class ReservaService {
       );
   }
 
+  buscarReservasPorMotivoPorId(param: string, id: number): Observable<ReservaFullResponse[]> {
+    return this.http
+      .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+      .pipe(
+        map((reservas) =>
+          reservas.filter((r) => r.motivo?.toLowerCase().includes(param.toLowerCase()) && r.usuarioId === id),
+        ),
+      );
+  }
+
   filtarReservaPorEstado(param: string): Observable<ReservaFullResponse[]> {
     return this.http
       .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
       .pipe(
         map((reservas) =>
           reservas.filter((r) => r.estado?.toLowerCase().includes(param.toLowerCase())),
+        ),
+      );
+  }
+
+
+   filtarReservaPorEstadoPorId(param: string, id: number): Observable<ReservaFullResponse[]> {
+    return this.http
+      .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+      .pipe(
+        map((reservas) =>
+          reservas.filter((r) => r.estado?.toLowerCase().includes(param.toLowerCase()) && r.usuarioId === id),
         ),
       );
   }
