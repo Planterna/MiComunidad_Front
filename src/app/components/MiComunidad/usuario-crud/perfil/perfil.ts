@@ -1,44 +1,73 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../../../environments/environments';
 import { AuthService } from '../../../../services/auth.service';
-import { UsuarioResponse } from '../../../../models/usuario.model';
-import { UsuarioService } from '../../../../services/usuario.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   selector: 'app-perfil',
-  templateUrl: './perfil.html',
+  templateUrl: './perfil.html'
 })
-export class PerfilComponent implements OnInit {
 
-  usuario!: UsuarioResponse;
+export class PerfilComponent implements OnInit {
+  
+guardar() {
+  const userId = this.auth.getId();
+
+  if (!userId) {
+    alert('No se pudo identificar al usuario');
+    return;
+  }
+
+  this.http.put(
+    `${environment.baseUrl}/Usuarios/${userId}`,
+    this.usuario
+  ).subscribe({
+    next: () => {
+      alert('Perfil actualizado correctamente');
+    },
+    error: () => {
+      alert('Error al actualizar el perfil');
+    }
+  });
+}
+
+  usuario: any = null;
   cargando = true;
+
+  private API_URL = `${environment.baseUrl}/Usuarios`;
 
   constructor(
     private auth: AuthService,
-    private usuarioService: UsuarioService
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    const user = this.auth.getUserFromToken();
-    if (!user) return;
+    const userId = this.auth.getId();
 
-    const userId = Number(user.sub);
+    if (!userId) {
+      console.error('No hay ID de usuario en el token');
+      this.cargando = false;
+      return;
+    }
 
-    this.usuarioService.getUsuarioPorId(userId).subscribe({
-      next: (data) => {
-        this.usuario = data;
+    this.obtenerPerfil(userId);
+  }
+
+  obtenerPerfil(id: number) {
+    this.http.get(`${this.API_URL}/${id}`).subscribe({
+      next: (res) => {
+        this.usuario = res;
         this.cargando = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error al obtener perfil', err);
         this.cargando = false;
       }
     });
-  }
-
-  guardarCambios(): void {
-    console.log('Usuario actualizado:', this.usuario);
-
-    // Aquí luego:
-    // this.usuarioService.updateUsuario(this.usuario).subscribe(...)
   }
 }

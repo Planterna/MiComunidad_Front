@@ -28,5 +28,9 @@ export class UsuarioService {
   return this.http.get<UsuarioResponse>(`${url}/Usuarios/${id}`);
 }
 
+actualizarUsuario(usuario: UsuarioResponse) {
+    return this.http.put(`${url}/Usuarios/${usuario.id}`, usuario);
+  }
+
 }
       

@@ -1,9 +1,10 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { tap } from 'rxjs';
-import { environment } from '../../environments/environments';
-import { Roles } from '../models/usuario.model';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, signal } from "@angular/core";
+import { Router } from "@angular/router";
+import { tap } from "rxjs";
+import { environment } from "../../environments/environments";
+import { Roles } from "../models/usuario.model";
+
 
 interface LoginRequest {
   email: string;
@@ -40,7 +41,7 @@ export class AuthService {
  login(data: LoginRequest) {
   return this.http.post<LoginResponse>(`${this.API_URL}/login`, data).pipe(
     tap(res => {
-      localStorage.setItem(this.TOKEN_KEY, res.token);
+      sessionStorage.setItem(this.TOKEN_KEY, res.token);
       this.authSignal.set(true);
     })
   );
@@ -57,7 +58,7 @@ export class AuthService {
   // LOGOUT
   // =====================
  logout() {
-  localStorage.removeItem(this.TOKEN_KEY);
+  sessionStorage.removeItem(this.TOKEN_KEY);
   this.authSignal.set(false);
   this.router.navigate(['/login']);
 }
@@ -66,7 +67,7 @@ export class AuthService {
   // TOKEN
   // =====================
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
   // =====================
   // AUTH STATE (Navbar)
