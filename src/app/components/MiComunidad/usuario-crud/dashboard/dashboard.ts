@@ -1,22 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
+import { Roles } from '../../../../models/usuario.model';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
+  imports: [],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  rolUser = signal<Roles | null>(null);
+  nombreUser = signal<string>('');
 
-  nombreAdmin = '';
-  rol = '';
+  constructor(private auth: AuthService) {}
 
-  constructor(private auth: AuthService) {
-    const user = this.auth.getUserFromToken();
+  ngOnInit(): void {
+    const rol = this.auth.getRole();
+    const nombres = this.auth.getNombreCompleto();
 
-    if (user) {
-      this.nombreAdmin = `${user.nombre} ${user.apellido}`;
-      this.rol =
-        user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-    }
+    if (rol) this.rolUser.set(rol);
+    if (nombres) this.nombreUser.set(nombres);
+  }
+
+  cerrarSesion() {
+    this.auth.logout();
   }
 }

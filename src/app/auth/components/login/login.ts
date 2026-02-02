@@ -41,7 +41,7 @@ export class LoginComponent {
           const rol = this.auth.getRole();
 
           if (rol === 'Administrador') {
-            this.router.navigate(['/usuario/dashboard']);
+            this.router.navigate(['/admin/dashboard']);
           } else {
             this.router.navigate(['/']);
           }

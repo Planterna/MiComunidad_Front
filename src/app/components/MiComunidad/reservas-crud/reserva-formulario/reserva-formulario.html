@@ -5,7 +5,10 @@
   [data]="dataModal()"
 />
 
-<div class="flex justify-center min-h-screen bg-base-200 mt-16 p-4">
+<div
+  class="flex justify-center min-h-screen bg-base-200 p-4"
+  [ngClass]="rolUser() === 'Administrador' || rolUser() === 'Encargado' ? 'mt-2' : 'mt-16'"
+>
   <div class="w-full max-w-[95%] sm:max-w-lg bg-base-100 shadow-xl rounded-2xl p-6 md:p-10">
     <h2 class="text-3xl font-extrabold text-center mb-8 font-montserrat text-primary">
       Editar Reserva
@@ -20,16 +23,16 @@
         <label class="label">
           <span class="label-text font-semibold">Nombre Vecino</span>
         </label>
-        @if(rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+        @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
           <select class="select select-primary w-full" formControlName="usuarioId">
-             @for (item of usuarioNombres(); track $index) {
-              <option [value]="item.id">{{ item.nombres }} {{item.apellidos}}</option>
+            @for (item of usuarioNombres(); track $index) {
+              <option [value]="item.id">{{ item.nombres }} {{ item.apellidos }}</option>
             }
           </select>
         }
-        @if(rolUser() === 'Vecino'){
+        @if (rolUser() === 'Vecino') {
           <select class="select select-primary w-full" formControlName="usuarioId">
-              <option [value]="usuarioId()">{{ nombreUS() }}</option>
+            <option [value]="usuarioId()">{{ nombreUS() }}</option>
           </select>
         }
       </div>
@@ -116,7 +119,13 @@
 
       <div class="flex w-full items-center justify-center">
         <div class="items-start mr-3">
-          <a routerLink="/reserva" class="btn btn-error"> Regresar </a>
+          @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+            <a routerLink="/admin/reserva" class="btn btn-error"> Regresar </a>
+          }
+          <!--  -->
+          @if (rolUser() === 'Vecino') {
+            <a routerLink="/reserva" class="btn btn-error"> Regresar </a>
+          }
         </div>
 
         @if (!reservaForm.invalid && rolUser() !== null) {

@@ -1,0 +1,138 @@
+<div
+  class="drawer md:drawer-open min-h-screen w-full bg-base-100 font-montserrat antialiased text-base-content selection:bg-primary selection:text-primary-content"
+>
+  <!-- TOGGLE DRAWER -->
+  <input id="app-drawer" type="checkbox" class="drawer-toggle" />
+
+  <!-- MAIN CONTENT -->
+  <div class="drawer-content flex flex-col">
+    <!-- NAVBAR MOBILE -->
+    <div class="navbar bg-base-100 border-b border-base-300 md:hidden">
+      <div class="flex-none">
+        <label for="app-drawer" class="btn btn-square btn-ghost">☰</label>
+      </div>
+      <div class="flex-1">
+        <span class="text-lg font-bold text-primary">
+          Mi<span class="text-secondary">Comunidad</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <main class="flex-1 min-h-screen px-2 py-2 md:px-4 md:py-4 bg-base-100">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="drawer-side z-40">
+    <label for="app-drawer" class="drawer-overlay"></label>
+
+    <aside
+      class="w-64 bg-base-200 border-r border-base-300 text-base-content min-h-screen overflow-y-auto"
+    >
+      <!-- LOGO -->
+      <div class="px-6 pt-6 pb-3 border-b border-base-300">
+        <h1 class="text-2xl font-bold text-primary">
+          Mi<span class="text-secondary">Comunidad</span>.
+        </h1>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="px-6 py-4 border-b border-base-300">
+        <p class="text-xs text-base-content/60 mb-2">Bienvenido,</p>
+        <div class="flex gap-3 items-center">
+          <div class="avatar">
+            <div class="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+              <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+            </div>
+          </div>
+          <span class="font-semibold text-sm">
+            {{ nombreUser() }}
+          </span>
+        </div>
+      </div>
+
+      <!-- NAV -->
+      <nav class="flex-1 px-4 py-6 space-y-1">
+        <!-- DASHBOARD -->
+        <a
+          routerLink="/admin/dashboard"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-semibold">Dashboard</span>
+        </a>
+
+        <!-- USUARIOS -->
+        <a
+          routerLink="/admin/usuarios"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-medium">Usuarios</span>
+        </a>
+
+        <!-- RESERVAS -->
+        <a
+          routerLink="/admin/reserva"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-medium">Reservas</span>
+        </a>
+
+        <!-- RECURSOS -->
+        <a
+          routerLink="/admin/recursos"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-medium">Recursos</span>
+        </a>
+
+        <!-- NOTICIAS -->
+        <a
+          routerLink="/admin/noticias"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-medium">Noticias</span>
+        </a>
+
+        <!-- HISTORIAL -->
+        <a
+          routerLink="/admin/historial"
+          routerLinkActive="bg-primary text-primary-content shadow"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+        >
+          <span class="font-medium">Historial de Uso</span>
+        </a>
+
+        <div class="divider"></div>
+
+        <!-- LOGOUT -->
+        <button
+          class="flex items-center w-full gap-3 px-3 py-3 rounded-lg hover:bg-error hover:text-error-content transition"
+          (click)="cerrarSesion()"
+        >
+          <span class="font-medium">Cerrar Sesión</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- THEME TOGGLE -->
+        <div class="flex w-full items-center justify-center">
+          <label class="flex cursor-pointer gap-2">
+            <input
+              type="checkbox"
+              value="night"
+              class="toggle theme-controller border-primary bg-primary [--tglbg:theme(colors.base-100)] checked:border-secondary checked:bg-secondary"
+            />
+          </label>
+        </div>
+      </nav>
+    </aside>
+  </div>
+</div>
