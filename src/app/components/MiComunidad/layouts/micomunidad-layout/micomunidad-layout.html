@@ -1,0 +1,26 @@
+@if (rolUser() === 'Vecino' || rolUser() === null) {
+  <div class="min-h-screen flex flex-col overflow-x-hidden">
+    <header class="shrink-0">
+      <app-front-navbar></app-front-navbar>
+
+    </header>
+
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+
+
+    <footer class="shrink-0">
+      <app-front-footer></app-front-footer>
+    </footer>
+  </div>
+}
+
+@if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+
+  <div>
+    <router-outlet></router-outlet>
+  </div>
+
+}
+

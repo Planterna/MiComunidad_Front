@@ -10,10 +10,11 @@ import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
 import { dataInformation } from '../../../../models/tarjetas-config.model';
 import { AuthService } from '../../../../services/auth.service';
 import { Roles, UsuarioResponse } from '../../../../models/usuario.model';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-reserva-formulario',
-  imports: [ReactiveFormsModule, RouterLink, ModalsAlert],
+  imports: [ReactiveFormsModule, RouterLink, ModalsAlert, NgClass],
   templateUrl: './reserva-formulario.html',
 })
 export class ReservaFormulario implements OnInit {
@@ -39,7 +40,7 @@ export class ReservaFormulario implements OnInit {
   editingId = signal<number>(0);
   nombreUS = signal<string>('');
   usuarioId= signal<number | null>(null);
-  rolUser = signal<Roles | null>(null); 
+  rolUser = signal<Roles | null>(null);
 
 
   //!Formulario
@@ -64,10 +65,10 @@ export class ReservaFormulario implements OnInit {
     console.log(rol, id)
 
     if (idReserva !== null && idReserva > 0) {
-    
+
      this.editingId.set(+idReserva);
 
-      
+
       this.reservaService.getReservasForId(+idReserva).subscribe((data) => {
         this.reserva.set(data);
         this.cargarData(rol!);
@@ -84,7 +85,7 @@ cargarData(rol: Roles){
 
   if((rol === 'Administrador' || rol === 'Encargado')  ){
     this.recursoService.getRecurso().subscribe((data) => this.recursoNombres.set(data))
-    this.usuarioService.getNombreUsuarioCompleto().subscribe((data) => this.usuarioNombres.set(data))  
+    this.usuarioService.getNombreUsuarioCompleto().subscribe((data) => this.usuarioNombres.set(data))
   }
 
   if(rol === 'Vecino'){
@@ -136,7 +137,7 @@ cargarData(rol: Roles){
             this.modalStatusSuccess();
           });
           setTimeout(() => {
-            this.router.navigate(['/reserva']);
+            this.router.navigate(['/admin/reserva']);
           }, 3000);
         }
 

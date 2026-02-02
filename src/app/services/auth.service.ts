@@ -20,6 +20,7 @@ const baseUrl = environment.baseUrl;
   providedIn: 'root'
 })
 
+//! arreglar rutas porque usas las env y usas la api token y se ve feo
 
 
 export class AuthService {
@@ -60,7 +61,7 @@ export class AuthService {
  logout() {
   sessionStorage.removeItem(this.TOKEN_KEY);
   this.authSignal.set(false);
-  this.router.navigate(['/login']);
+  this.router.navigate(['/auth/login']);
 }
 
   // =====================

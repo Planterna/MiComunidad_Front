@@ -1,16 +1,16 @@
 
 
-<div class="min-h-screen flex items-center justify-center bg-base-200 pt-24 font-montserrat">
+<div class="min-h-screen flex items-center justify-center bg-base-200 font-montserrat">
   <div class="card w-full max-w-md bg-base-100 shadow-2xl border border-base-300">
     <div class="card-body">
-        
+
       <h2
         class="text-3xl font-black text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
       >
         Iniciar Sesión
       </h2>
 
-      
+
 
       <form [formGroup]="form" (ngSubmit)="login()" class="space-y-6 mt-4">
 
@@ -53,11 +53,11 @@
         </button>
       </form>
 
-       
+
 
       <p class="text-center text-sm mt-4">
         ¿No tienes cuenta?
-        <a routerLink="/register" class="link link-primary font-semibold">
+        <a routerLink="/auth/register" class="link link-primary font-semibold">
           Regístrate
         </a>
       </p>
