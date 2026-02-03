@@ -1,0 +1,172 @@
+<div class="w-full">
+  <!-- Barra de búsqueda y botón nuevo -->
+  <div class="flex flex-row gap-3 font-montserrat mb-5">
+    <label class="w-full input input-bordered input-primary flex items-center gap-2">
+      <input type="text" class="grow" placeholder="Buscar recursos..." (input)="buscarDato($event)" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="h-4 w-4 opacity-70"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </label>
+
+    <button routerLink="formulario" class="btn btn-primary">Nuevo Recurso</button>
+  </div>
+
+  <!-- Filtro de estado -->
+  <div class="flex w-full font-montserrat justify-center items-center m-auto mb-4">
+    <div class="font-medium">
+      <select class="select select-primary w-full max-w-xs" (input)="FiltarDato($event)">
+        <option value="" selected>Todos los Estados</option>
+        <option value="Disponible">Disponible</option>
+        <option value="Ocupado">Ocupado</option>
+        <option value="Mantenimiento">Mantenimiento</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Grid de tarjetas -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl m-auto font-montserrat">
+    @for (recurso of recursos(); track recurso.id) {
+      <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-300">
+        <figure class="h-56 relative overflow-hidden">
+          @if (recurso.imagenUrl) {
+            <img
+              [src]="recurso.imagenUrl"
+              [alt]="recurso.nombre"
+              class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          } @else {
+            <div class="h-full w-full bg-base-300 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+          }
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </figure>
+        
+        <div class="card-body text-center items-center">
+          <h2 class="card-title font-bold text-md">{{ recurso.nombre }}</h2>
+          <p class="text-sm opacity-70">{{ recurso.tipoRecursoNombre }}</p>
+          
+          @if (recurso.capacidad || recurso.stock) {
+            <p class="text-sm opacity-70">
+              @if (recurso.capacidad) { Capacidad: {{ recurso.capacidad }} personas<br> }
+              @if (recurso.stock) { Stock: {{ recurso.stock }} unidades }
+            </p>
+          }
+          
+          @if (recurso.ubicacion) {
+            <p class="text-md opacity-70">{{ recurso.ubicacion }}</p>
+          }
+          
+          <div class="flex flex-col items-center gap-2">
+            <span
+              class="badge text-sm font-semibold"
+              [class.badge-success]="recurso.estado === 'Disponible'"
+              [class.badge-warning]="recurso.estado === 'Ocupado'"
+              [class.badge-error]="recurso.estado === 'Mantenimiento'"
+            >
+              {{ recurso.estado }}
+            </span>
+          </div>
+
+          <!-- Botones de acción -->
+          @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+            <div class="card-actions justify-center mt-4">
+              <button
+                routerLink="formulario/{{ recurso.id }}"
+                class="btn btn-circle btn-outline"
+                title="Editar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-pencil-square"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                  />
+                </svg>
+              </button>
+              
+              <!-- Botón de eliminar - siempre visible para admin -->
+              <button
+                class="btn btn-circle btn-outline btn-error"
+                (click)="abrirConfirmacion(recurso.id)"
+                title="Eliminar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              <!-- Botón de cambiar estado - solo si no está disponible -->
+              @if (recurso.estado !== 'Disponible') {
+                <button
+                  class="btn btn-circle btn-outline btn-success"
+                  (click)="activarData(recurso.id)"
+                  title="Marcar como Disponible"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-check-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                      d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"
+                    />
+                  </svg>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full text-center py-12">
+        <div class="text-6xl mb-4">📦</div>
+        <h3 class="font-bold text-2xl mb-2">No se encontraron recursos</h3>
+        <p class="text-base-content/70">No hay recursos que coincidan con tu búsqueda</p>
+      </div>
+    }
+  </div>
+
+  <!-- Modal de confirmación -->
+  <app-modals-alert
+    [modalId]="modalId"
+    [titulo]="tituloModal()"
+    [data]="dataModal()"
+    (confirmar)="eliminarData()"
+  ></app-modals-alert>
+</div>

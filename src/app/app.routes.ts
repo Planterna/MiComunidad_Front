@@ -3,6 +3,8 @@ import { HomePage } from './components/MiComunidad/home-page/home-page';
 import { NotFoundPage } from './components/MiComunidad/not-found-page/not-found-page';
 import { ReservaVista } from './components/MiComunidad/reservas-crud/reserva-vista/reserva-vista';
 import { ReservaFormulario } from './components/MiComunidad/reservas-crud/reserva-formulario/reserva-formulario';
+import { RecursoVista } from './components/MiComunidad/recursos-crud/recurso-vista/recurso-vista';
+import { RecursoFormulario } from './components/MiComunidad/recursos-crud/recurso-formulario/recurso-formulario';
 import { LoginComponent } from './auth/components/login/login';
 import { RegisterComponent } from './auth/components/register/register';
 import { AuthGuard } from './auth/guard/auth.guard';
@@ -51,7 +53,18 @@ export const routes: Routes = [
   },
   {
     path: 'recurso',
-    component: NotFoundPage,
+    canActivate: [AuthGuard],
+    component: RecursoVista,
+  },
+  {
+    path: 'recurso/formulario',
+    canActivate: [AuthGuard],
+    component: RecursoFormulario,
+  },
+  {
+    path: 'recurso/formulario/:id',
+    canActivate: [AuthGuard],
+    component: RecursoFormulario,
   },
   {
     path: 'historial-uso',

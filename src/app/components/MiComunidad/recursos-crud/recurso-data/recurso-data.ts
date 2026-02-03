@@ -1,0 +1,161 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { RecursoService } from '../../../../services/recurso.service';
+import { TipoRecursoService } from '../../../../services/tipo-recurso.service';
+import { RecursoResponse } from '../../../../models/recurso.model';
+import { dataInformation } from '../../../../models/tarjetas-config.model';
+import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
+import { AuthService } from '../../../../services/auth.service';
+import { Roles } from '../../../../models/usuario.model';
+
+@Component({
+  selector: 'app-recurso-data',
+  standalone: true,
+  imports: [RouterLink, ModalsAlert],
+  templateUrl: './recurso-data.html',
+})
+export class RecursoData implements OnInit {
+  //! DI
+  recursoServicio = inject(RecursoService);
+  tipoRecursoServicio = inject(TipoRecursoService);
+  authServicio = inject(AuthService);
+
+  //! Config
+  modalId = 'modal-recurso';
+  tituloModal = signal<string>('');
+  dataModal = signal<dataInformation | null>(null);
+  recursoIdForEliminated = signal<number | null>(null);
+
+  //! Data
+  recursos = signal<any[]>([]);
+  rolUser = signal<Roles | null>(null);
+  idUser = signal<number | null>(null);
+
+  //! Metodos Crud
+  ngOnInit(): void {
+    this.cargarData();
+  }
+
+  cargarData() {
+    const rol = this.authServicio.getRole();
+    const id = this.authServicio.getId();
+    
+    if (rol && id) {
+      this.rolUser.set(rol);
+      this.idUser.set(id);
+      
+      // Una sola petición optimizada que trae todo
+      this.recursoServicio.getRecursosDataFull().subscribe((recursos) => {
+        this.recursos.set(recursos);
+      });
+    }
+  }
+
+  eliminarData() {
+    const id = this.recursoIdForEliminated();
+    if (id) {
+      // Usar el método optimizado del servicio
+      this.recursoServicio.eliminarRecursoLogico(id).subscribe({
+        next: () => {
+          this.modalStatusSuccess();
+        },
+        error: (error) => {
+          console.error('Error al eliminar:', error);
+          this.modalStatusError();
+        }
+      });
+    } else {
+      this.modalStatusError();
+    }
+  }
+
+  activarData(valueId: number) {
+    if (valueId) {
+      // Usar el método optimizado del servicio
+      this.recursoServicio.activarRecurso(valueId).subscribe({
+        next: () => {
+          this.modalStatusSuccess();
+        },
+        error: (error) => {
+          console.error('Error al activar:', error);
+          this.modalStatusError();
+        }
+      });
+    } else {
+      this.modalStatusError();
+    }
+  }
+
+  //! Filtro y Busqueda
+  buscarDato(event: any) {
+    const texto = event.target.value.toLowerCase().trim();
+
+    if (texto === '') {
+      this.cargarData();
+      return;
+    }
+
+    // Usar método optimizado
+    this.recursoServicio.buscarRecursosPorNombre(texto).subscribe((recursos) => {
+      this.recursos.set(recursos);
+    });
+  }
+
+  FiltarDato(event: any) {
+    const texto = event.target.value.trim();
+
+    if (texto === '') {
+      this.cargarData();
+      return;
+    }
+
+    // Usar método optimizado
+    this.recursoServicio.filtrarRecursosPorEstado(texto).subscribe((recursos) => {
+      this.recursos.set(recursos);
+    });
+  }
+
+  //! Modal
+  abrirConfirmacion(id: number) {
+    this.tituloModal.set('Confirmar Eliminación');
+    this.dataModal.set('confirm');
+    this.recursoIdForEliminated.set(id);
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+  }
+
+  modalStatusSuccess() {
+    this.tituloModal.set('Éxitoso');
+    this.dataModal.set('success');
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+    this.cargarData();
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+        this.recursoIdForEliminated.set(null);
+      }
+    }, 1500);
+  }
+
+  modalStatusError() {
+    this.tituloModal.set('Error');
+    this.dataModal.set('error');
+
+    const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+    if (check) check.checked = true;
+    this.cargarData();
+    setTimeout(() => {
+      const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
+      if (check) {
+        check.checked = false;
+        this.dataModal.set(null);
+        this.tituloModal.set('');
+        this.recursoIdForEliminated.set(null);
+      }
+    }, 1500);
+  }
+}
