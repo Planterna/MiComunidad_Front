@@ -4,6 +4,8 @@ import { AuthGuard } from '../auth/guard/auth.guard';
 import { AdminHome } from './admin-home/admin-home';
 import { ReservaData } from '../components/MiComunidad/reservas-crud/reserva-data/reserva-data';
 import { ReservaFormulario } from '../components/MiComunidad/reservas-crud/reserva-formulario/reserva-formulario';
+import { PerfilComponent } from '../components/MiComunidad/usuario-crud/perfil/perfil';
+import { UsuariosComponent } from '../components/MiComunidad/usuario-crud/usuario-tabla/usuario-tabla';
 
 export const adminDashboardRoutes: Routes = [
   {
@@ -28,7 +30,14 @@ export const adminDashboardRoutes: Routes = [
         path: 'reserva/formulario/:id',
         component: ReservaFormulario,
       },
-
+      {
+        path: 'perfil/:id',
+        component: PerfilComponent,
+      },
+      {
+        path: 'usuario',
+        component: UsuariosComponent,
+      },
       //! Añadir para el resto de campos del dashboard, tambien se usa la misma ruta que las paginas normales para usuario
       // {
       //   path: 'recurso',

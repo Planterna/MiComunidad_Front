@@ -51,7 +51,7 @@ export class AuthService {
   // REGISTER
   // =====================
   register(data: any) {
-    return this.http.post(`${environment.baseUrl}/Auth/crear`, data);
+    return this.http.post(`${this.API_URL}/crear`, data);
   }
 
 

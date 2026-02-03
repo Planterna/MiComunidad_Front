@@ -1,44 +1,94 @@
-<div class="max-w-4xl mx-auto space-y-8">
 
-  <!-- INFO PERSONAL -->
-  <div class="card bg-base-100 shadow border border-base-300">
-    <div class="card-body">
-      <h2 class="card-title text-primary">Información Personal</h2>
+ <app-modals-alert 
+    [modalId]="modalId()"
+    [titulo]="titulo()"
+    [data]="data()">
+    </app-modals-alert>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input class="input input-bordered" [value]="usuario.cedula" disabled />
-        <input class="input input-bordered" [value]="usuario.email" disabled />
+<div class="pt-20" *ngIf="!cargando() && usuario()">
 
-        <input class="input input-bordered"
-               [(ngModel)]="usuario.nombres"
-               placeholder="Nombres" />
+  <form
+    [formGroup]="perfilForm"
+    (ngSubmit)="guardar()"
+    class="max-w-4xl mx-auto space-y-8 font-montserrat"
+  >
 
-        <input class="input input-bordered"
-               [(ngModel)]="usuario.apellidos"
-               placeholder="Apellidos" />
+    <div class="card bg-base-100 shadow border border-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-primary">Información Personal</h2>
 
-        <input class="input input-bordered"
-               [(ngModel)]="usuario.telefono"
-               placeholder="Teléfono" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <input class="input input-bordered"
-               [(ngModel)]="usuario.direccion"
-               placeholder="Dirección" />
+          <!-- CÉDULA -->
+          <input
+            class="input input-bordered"
+            formControlName="cedula"
+            readonly
+          />
+
+          <!-- EMAIL -->
+          <input
+            class="input input-bordered"
+            formControlName="email"
+            readonly
+          />
+
+          <!-- NOMBRES -->
+          <input
+            class="input input-bordered"
+            formControlName="nombres"
+            placeholder="Nombres"
+          />
+
+          <!-- APELLIDOS -->
+          <input
+            class="input input-bordered"
+            formControlName="apellidos"
+            placeholder="Apellidos"
+          />
+
+          <!-- TELÉFONO -->
+          <input
+            class="input input-bordered"
+            formControlName="telefono"
+            placeholder="Teléfono"
+          />
+
+          <!-- DIRECCIÓN -->
+          <input
+            class="input input-bordered"
+            formControlName="direccion"
+            placeholder="Dirección"
+          />
+
+        </div>
+
+        <!-- CHECKBOX -->
+        <label class="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            formControlName="aceptaNotificaciones"
+          />
+          Recibir notificaciones
+        </label>
+
+        <!-- BOTÓN -->
+        <div class="card-actions justify-end mt-4">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="perfilForm.invalid"
+          >
+            Guardar Cambios
+          </button>
+        </div>
+
       </div>
-
-      <label class="flex items-center gap-2 mt-4">
-        <input type="checkbox"
-               class="checkbox checkbox-primary"
-               [(ngModel)]="usuario.aceptaNotificaciones">
-        Recibir notificaciones
-      </label>
-
-      <div class="card-actions justify-end mt-4">
-        <button class="btn btn-primary" (click)="guardar()">
-          Guardar Cambios
-        </button>
-      </div>
+      
     </div>
-  </div>
+
+
+  </form>
 
 </div>

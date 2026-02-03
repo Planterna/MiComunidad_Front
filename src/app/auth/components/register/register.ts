@@ -65,7 +65,7 @@ export class RegisterComponent implements OnInit {
       next: (res: any) => {
         console.log('Respuesta del backend:', res);
         this.showSuccess(res?.message || 'Usuario registrado correctamente');
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+        setTimeout(() => this.router.navigate(['/auth/login']), 1500);
       },
       error: (err: any) => {
         console.error('Error del backend:', err);

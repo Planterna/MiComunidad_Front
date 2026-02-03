@@ -47,8 +47,8 @@
               <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
             </div>
           </div>
-          <span class="font-semibold text-sm">
-            {{ nombreUser() }}
+          <span routerLink="/admin/perfil/{{ id() }}" class="font-semibold text-sm hover: cursor-pointer">
+            {{ nombreUser() }}     
           </span>
         </div>
       </div>
@@ -60,16 +60,16 @@
           routerLink="/admin/dashboard"
           routerLinkActive="bg-primary text-primary-content shadow"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg transition"
         >
           <span class="font-semibold">Dashboard</span>
         </a>
 
         <!-- USUARIOS -->
         <a
-          routerLink="/admin/usuarios"
+          routerLink="/admin/usuario"
           routerLinkActive="bg-primary text-primary-content shadow"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg transition"
         >
           <span class="font-medium">Usuarios</span>
         </a>
@@ -78,7 +78,7 @@
         <a
           routerLink="/admin/reserva"
           routerLinkActive="bg-primary text-primary-content shadow"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg transition"
         >
           <span class="font-medium">Reservas</span>
         </a>
@@ -87,7 +87,7 @@
         <a
           routerLink="/admin/recursos"
           routerLinkActive="bg-primary text-primary-content shadow"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg  transition"
         >
           <span class="font-medium">Recursos</span>
         </a>
@@ -96,7 +96,7 @@
         <a
           routerLink="/admin/noticias"
           routerLinkActive="bg-primary text-primary-content shadow"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg transition"
         >
           <span class="font-medium">Noticias</span>
         </a>
@@ -105,7 +105,7 @@
         <a
           routerLink="/admin/historial"
           routerLinkActive="bg-primary text-primary-content shadow"
-          class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 transition"
+          class="flex items-center gap-3 px-3 py-3 rounded-lg transition"
         >
           <span class="font-medium">Historial de Uso</span>
         </a>

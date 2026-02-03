@@ -20,6 +20,7 @@ export class UsuarioService {
     );
   }
 
+
   getNombreUsuarioCompleto(): Observable<UsuarioResponse[]> {
     return this.http.get<UsuarioResponse[]>(`${url}/Usuarios`);
   }
@@ -29,7 +30,9 @@ export class UsuarioService {
 }
 
 actualizarUsuario(usuario: UsuarioResponse) {
+    console.log('Actualizando usuario:', usuario);
     return this.http.put(`${url}/Usuarios/${usuario.id}`, usuario);
+    
   }
 
 }

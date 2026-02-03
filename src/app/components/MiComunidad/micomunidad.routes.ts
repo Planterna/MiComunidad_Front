@@ -14,21 +14,24 @@ export const miComunidadRoutes: Routes = [
     children: [
       {
         path: '',
-        component: HomePage,
+        component: HomePage,   
       },
       {
         path: 'reserva',
         canActivate: [AuthGuard],
+        data: {roles: ['Vecino' ]},
         component: ReservaVista,
       },
       {
         path: 'reserva/formulario',
         canActivate: [AuthGuard],
+        data: {roles: ['Vecino' ]},
         component: ReservaFormulario,
       },
       {
         path: 'reserva/formulario/:id',
         canActivate: [AuthGuard],
+        data: {roles: ['Vecino' ]},
         component: ReservaFormulario,
       },
       {
@@ -50,7 +53,12 @@ export const miComunidadRoutes: Routes = [
       {
         path: 'perfil',
         component: PerfilComponent,
+        data: {roles: ['Vecino' ]},
         canActivate: [AuthGuard],
+      },
+      {
+        path: 'not-found',
+        component: NotFoundPage
       },
       {
         path: '**',
