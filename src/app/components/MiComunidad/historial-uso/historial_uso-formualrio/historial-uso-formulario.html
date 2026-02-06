@@ -1,0 +1,132 @@
+<div class="max-w-4xl mx-auto mt-20 bg-base-100 shadow-xl rounded-xl p-8">
+  <h2 class="text-4xl font-bold text-center mb-8 text-primary">
+    Nuevo Registro de Uso
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-1 md:grid-cols-2 gap-7">
+
+    <!-- USUARIO -->
+    <label class="form-control w-full">
+      <span class="label-text">Usuario</span>
+      <select
+        class="select select-bordered w-full"
+        formControlName="usuarioId"
+        [class.select-error]="isInvalid('usuarioId')"
+      >
+        <option value="">Seleccione un usuario</option>
+        <option *ngFor="let u of usuarios" [value]="u.id">
+              {{ u.nombres }} {{ u.apellidos }}
+        </option>
+
+      </select>
+      <span class="text-error text-sm" *ngIf="isInvalid('usuarioId')">
+        El usuario es obligatorio
+      </span>
+    </label>
+
+    <!-- FECHA -->
+    <label class="form-control w-full">
+      <span class="label-text">Fecha de uso</span>
+      <input
+        type="date"
+        class="input input-bordered w-full"
+        formControlName="fechaUso"
+        [class.input-error]="isInvalid('fechaUso')"
+      >
+      <span class="text-error text-sm" *ngIf="isInvalid('fechaUso')">
+        La fecha es obligatoria
+      </span>
+    </label>
+
+    <!-- HORA INICIO -->
+    <label class="form-control w-full">
+      <span class="label-text">Hora inicio</span>
+      <input
+        type="time"
+        class="input input-bordered w-full"
+        formControlName="horaInicio"
+        [class.input-error]="isInvalid('horaInicio')"
+      >
+      <span class="text-error text-sm" *ngIf="isInvalid('horaInicio')">
+        La hora de inicio es obligatoria
+      </span>
+    </label>
+
+    <!-- HORA FIN -->
+    <label class="form-control w-full">
+      <span class="label-text">Hora fin</span>
+      <input
+        type="time"
+        class="input input-bordered w-full"
+        formControlName="horaFin"
+        [class.input-error]="isInvalid('horaFin')"
+      >
+      <span class="text-error text-sm" *ngIf="isInvalid('horaFin')">
+        La hora de fin es obligatoria
+      </span>
+    </label>
+
+    <!-- RECURSO -->
+    <label class="form-control w-full">
+      <span class="label-text">Recurso</span>
+      <select
+        class="select select-bordered w-full"
+        formControlName="recursoId"
+        [class.select-error]="isInvalid('recursoId')"
+      >
+        <option value="">Seleccione un recurso</option>
+        <option *ngFor="let r of recursos; trackBy: trackById" [value]="r.id">
+          {{ r.nombre }}
+        </option>
+      </select>
+      <span class="text-error text-sm" *ngIf="isInvalid('recursoId')">
+        El recurso es obligatorio
+      </span>
+    </label>
+
+    <!-- ESTADO -->
+    <label class="form-control w-full">
+      <span class="label-text">Estado</span>
+      <select
+        class="select select-bordered w-full"
+        formControlName="estado"
+        [class.select-error]="isInvalid('estado')"
+      >
+        <option value="">Seleccione estado</option>
+        <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+      </select>
+      <span class="text-error text-sm" *ngIf="isInvalid('estado')">
+        El estado es obligatorio
+      </span>
+    </label>
+
+    <!-- NOTAS -->
+    <label class="form-control w-full col-span-full">
+      <span class="label-text">Notas</span>
+      <textarea class="textarea textarea-bordered w-full" formControlName="notas"></textarea>
+    </label>
+
+    <!-- ACTIVO -->
+    <div class="flex items-center gap-3 col-span-full">
+      <input type="checkbox" class="checkbox checkbox-primary" formControlName="activo">
+      <span class="label-text">Activo</span>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex justify-between pt-6 col-span-full">
+      <a routerLink="/historial-uso" class="btn btn-error">Regresar</a>
+     <button type="submit" class="btn btn-primary">
+  Guardar
+</button>
+
+    </div>
+  </form>
+
+  <!-- MODAL -->
+  <app-modals-alert
+    [modalId]="modalId"
+    [titulo]="modalEstado === 'success' ? 'Registro guardado' : 'Error'"
+    [data]="modalEstado"
+    (confirmar)="irListado()">
+  </app-modals-alert>
+</div>
