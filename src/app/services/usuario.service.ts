@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
-import { map, Observable } from 'rxjs';
+import { map, Observable, pipe } from 'rxjs';
 import { UsuarioResponse } from '../models/usuario.model';
 
 const url = environment.baseUrl;
@@ -24,6 +24,22 @@ getUsuarios(): Observable<any[]> {
     .pipe(
       map(user => `${user.nombres} ${user.apellidos}`)
     );
+  }
+
+
+  getNombreUsuarioCompleto(): Observable<UsuarioResponse[]> {
+    return this.http.get<UsuarioResponse[]>(`${url}/Usuarios`);
+  }
+
+  getUsuarioPorId(id: number) {
+  return this.http.get<UsuarioResponse>(`${url}/Usuarios/${id}`);
 }
 
+actualizarUsuario(usuario: UsuarioResponse) {
+    console.log('Actualizando usuario:', usuario);
+    return this.http.put(`${url}/Usuarios/${usuario.id}`, usuario);
+    
+  }
+
 }
+      

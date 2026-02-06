@@ -78,7 +78,7 @@
             </span>
           </p>
         }
-        @if (rolId() !== '' && rolId() === 'Vecino') {
+        @if (rolUser() !== '' && rolUser() === 'Vecino') {
           @if (item[configCard().estado!] !== 'Aprobada') {
             <div class="card-actions justify-center mt-4">
               <button
@@ -146,7 +146,7 @@
           }
         }
         <!--  -->
-        @if (rolId() === 'Administrador' || rolId() === 'Encargado') {
+        @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
           <div class="card-actions justify-center mt-4">
             <button
               [routerLink]="['formulario/', item[configCard().id!]]"

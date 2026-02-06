@@ -1,0 +1,121 @@
+<div class="p-6 bg-base-200 min-h-screen">
+
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold font-montserrat">Usuarios</h2>
+
+    <input
+      type="text"
+      placeholder="Buscar por nombre o email..."
+      class="input input-bordered w-64"
+      (input)="onBuscar($event)"
+    />
+  </div>
+
+  <!-- LOADING -->
+  @if (cargando()) {
+    <div class="flex justify-center py-10">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  }
+
+  <!-- TABLE -->
+  @if (!cargando()) {
+    <div class="overflow-x-auto bg-base-100 rounded-xl shadow">
+      <table class="table table-zebra w-full">
+
+        <!-- HEAD -->
+        <thead class="bg-base-200 text-base-content">
+          <tr>
+            <th>
+              <input type="checkbox" class="checkbox checkbox-primary" />
+            </th>
+            <th>ID</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+
+        <!-- BODY -->
+        <tbody>
+          @if (usuariosFiltrados().length === 0) {
+            <tr>
+              <td colspan="8" class="text-center py-6 opacity-70">
+                No se encontraron usuarios
+              </td>
+            </tr>
+          }
+
+          @for (usuario of usuariosFiltrados(); track usuario.id) {
+            <tr class="hover">
+              <td>
+                <input type="checkbox" class="checkbox checkbox-primary" />
+              </td>
+
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.nombres }}</td>
+              <td>{{ usuario.apellidos }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.telefono }}</td>
+
+              <!-- ESTADO -->
+              <td>
+                <span
+                  class="badge"
+                  [class.badge-success]="usuario.estado === 'Activo'"
+                  [class.badge-error]="usuario.estado === 'Inactivo'"
+                >
+                  {{ usuario.estado }}
+                </span>
+              </td>
+
+              <!-- ACCIONES -->
+              <td class="flex gap-2 justify-center">
+                
+                <!-- EDITAR → PERFIL -->
+                <button
+                  class="btn btn-sm btn-info"
+                  [routerLink]="['/admin/perfil/', usuario.id]"
+                >
+                  Editar
+                </button>
+
+                <!-- ACTIVAR / DESACTIVAR -->
+                <button
+                  class="btn btn-sm"
+                  [class.btn-error]="usuario.estado === 'Activo'"
+                  [class.btn-success]="usuario.estado === 'Inactivo'"
+                  (click)="confirmarEliminar(usuario)"
+                >
+                  {{ usuario.estado === 'Activo' ? 'Desactivar' : 'Activar' }}
+                </button>
+
+              </td>
+            </tr>
+          }
+        </tbody>
+
+      </table>
+    </div>
+  }
+
+  <!-- FOOTER -->
+  <div class="mt-4 flex justify-between items-center">
+    <span class="text-sm opacity-70">
+      Total: {{ usuariosFiltrados().length }} usuarios
+    </span>
+  </div>
+
+</div>
+
+<!-- MODAL ALERT -->
+<app-modals-alert
+  [modalId]="modalId()"
+  [titulo]="titulo()"
+  [data]="data()"
+  (confirmar)="eliminar()"
+></app-modals-alert>

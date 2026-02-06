@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+<<<<<<< HEAD
 import { HomePage } from './components/MiComunidad/home-page/home-page';
 import { NotFoundPage } from './components/MiComunidad/not-found-page/not-found-page';
 import { ReservaVista } from './components/MiComunidad/reservas-crud/reserva-vista/reserva-vista';
@@ -6,10 +7,23 @@ import { ReservaFormulario } from './components/MiComunidad/reservas-crud/reserv
 import { HistorialUsoVista } from './components/MiComunidad/historial-uso/historial-uso-vista/historialuso_vista';
 import { HistorialUsoFormulario } from './components/MiComunidad/historial-uso/historial_uso-formualrio/historialuso-formulario';
 
+=======
+import { AuthGuard } from './auth/guard/auth.guard';
+>>>>>>> origin/main
 
 export const routes: Routes = [
   {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes'),
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin-dashboard/admin-dashboard.routes'),
+    
+  },
+  {
     path: '',
+<<<<<<< HEAD
     component: HomePage,
     pathMatch: 'full',
   },
@@ -48,5 +62,8 @@ export const routes: Routes = [
   {
     path: '**',
     component: NotFoundPage,
+=======
+    loadChildren: () => import('./components/MiComunidad/micomunidad.routes'),
+>>>>>>> origin/main
   },
 ];

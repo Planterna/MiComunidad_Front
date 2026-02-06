@@ -5,10 +5,11 @@ export interface UsuarioResponse {
   nombres:              string;
   apellidos:            string;
   email:                string;
+  passHash:             string;
   telefono:             string;
   direccion:            string;
-  rolId:                number;
-  estado:               Estado;
+  rolId?:                number;
+  estado?:               Estado;
   aceptaNotificaciones: boolean;
   fechaCreacion?:        Date;
   fechaModificacion?:    Date;
@@ -22,3 +23,6 @@ export enum Estado {
   Activo = "Activo",
   Inactivo = "Inactivo",
 }
+
+
+export type Roles = 'Administrador' | 'Encargado' | 'Vecino' | '';

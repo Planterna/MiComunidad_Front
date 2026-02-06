@@ -24,8 +24,14 @@ export class ReservaService {
     return this.http.get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`);
   }
 
+  getReservasDataFullForId(id: number): Observable<ReservaFullResponse[]> {
+    return this.http
+      .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+      .pipe(map((res) => res.filter((r) => r.usuarioId === id)));
+  }
+
   createReserva(reserva: ReservaResponse): Observable<ReservaResponse> {
-    return this.http.post<ReservaResponse>(baseUrl, reserva);
+    return this.http.post<ReservaResponse>(`${baseUrl}/Reservas`, reserva);
   }
 
   deleteReserva(id: number): Observable<ReservaResponse> {
@@ -60,7 +66,26 @@ export class ReservaService {
       .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
       .pipe(
         map((reservas) =>
-          reservas.filter((r) => r.motivo?.toLowerCase().includes(param.toLowerCase())),
+          reservas.filter(
+            (r) =>
+              r.motivo?.toLowerCase().includes(param.toLowerCase()) ||
+              r.nombreRecurso?.toLowerCase().includes(param.toLowerCase()),
+          ),
+        ),
+      );
+  }
+
+  buscarReservasPorMotivoPorId(param: string, id: number): Observable<ReservaFullResponse[]> {
+    return this.http
+      .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+      .pipe(
+        map((reservas) =>
+          reservas.filter(
+            (r) =>
+              (r.motivo?.toLowerCase().includes(param.toLowerCase()) ||
+                r.nombreRecurso?.toLowerCase().includes(param.toLowerCase())) &&
+              r.usuarioId === id,
+          ),
         ),
       );
   }
@@ -71,6 +96,18 @@ export class ReservaService {
       .pipe(
         map((reservas) =>
           reservas.filter((r) => r.estado?.toLowerCase().includes(param.toLowerCase())),
+        ),
+      );
+  }
+
+  filtarReservaPorEstadoPorId(param: string, id: number): Observable<ReservaFullResponse[]> {
+    return this.http
+      .get<ReservaFullResponse[]>(`${baseUrl}/Reservas/Full`)
+      .pipe(
+        map((reservas) =>
+          reservas.filter(
+            (r) => r.estado?.toLowerCase().includes(param.toLowerCase()) && r.usuarioId === id,
+          ),
         ),
       );
   }

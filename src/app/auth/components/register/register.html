@@ -1,0 +1,62 @@
+<div class="min-h-screen flex items-center justify-center bg-base-200 font-montserrat">
+  <div class="card w-full max-w-2xl bg-base-100 shadow-2xl border border-base-300">
+    <div class="card-body">
+      <h2
+        class="text-3xl font-black text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+        Crear Cuenta
+      </h2>
+
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="register()"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
+      >
+        <input class="input input-bordered" placeholder="Cédula" formControlName="Cedula" />
+        <input class="input input-bordered" placeholder="Nombres" formControlName="Nombres" />
+        <input class="input input-bordered" placeholder="Apellidos" formControlName="Apellidos" />
+        <input class="input input-bordered" placeholder="Correo" formControlName="Email" />
+
+        <input class="input input-bordered" placeholder="Teléfono" formControlName="Telefono" />
+        <input class="input input-bordered" placeholder="Dirección" formControlName="Direccion" />
+
+        <input
+          type="password"
+          class="input input-bordered md:col-span-2"
+          placeholder="Contraseña"
+          formControlName="PassHash"
+        />
+
+        <div class="md:col-span-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            formControlName="AceptaNotificaciones"
+          />
+          <span class="text-sm">Acepto recibir notificaciones</span>
+        </div>
+
+        <button class="btn btn-primary md:col-span-2 mt-4" [disabled]="registerForm.invalid">
+          Registrarse
+        </button>
+      </form>
+
+      <!-- Alertas -->
+      <div
+        *ngIf="alertType() === 'success'"
+        class="alert alert-success mt-4 shadow-md animate-fade-in"
+      >
+        {{ alertMessage() }}
+      </div>
+
+      <div *ngIf="alertType() === 'error'" class="alert alert-error mt-4 shadow-md animate-fade-in">
+        {{ alertMessage() }}
+      </div>
+
+      <p class="text-center text-sm mt-4">
+        ¿Ya tienes cuenta?
+        <a routerLink="/auth/login" class="link link-primary font-semibold"> Inicia sesión </a>
+      </p>
+    </div>
+  </div>
+</div>

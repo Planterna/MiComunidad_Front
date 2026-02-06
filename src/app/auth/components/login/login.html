@@ -1,0 +1,66 @@
+
+
+<div class="min-h-screen flex items-center justify-center bg-base-200 font-montserrat">
+  <div class="card w-full max-w-md bg-base-100 shadow-2xl border border-base-300">
+    <div class="card-body">
+
+      <h2
+        class="text-3xl font-black text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+      >
+        Iniciar Sesión
+      </h2>
+
+
+
+      <form [formGroup]="form" (ngSubmit)="login()" class="space-y-6 mt-4">
+
+        <div class="form-control">
+          <label class="label font-semibold">Correo</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="input input-bordered"
+            placeholder="correo@ejemplo.com"
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label font-semibold">Contraseña</label>
+          <input
+            type="password"
+            formControlName="passHash"
+            class="input input-bordered"
+            placeholder="••••••••"
+          />
+        </div>
+
+        @if (alertType() === 'success') {
+            <div class="alert alert-success shadow-md mt-4 animate-fade-in">
+            <span>{{ alertMessage() }}</span>
+            </div>
+        }
+
+        @if (alertType() === 'error') {
+            <div class="alert alert-error shadow-md mt-4 animate-fade-in">
+            <span>{{ alertMessage() }}</span>
+            </div>
+        }
+        <button
+          class="btn btn-primary w-full mt-4"
+          [disabled]="form.invalid"
+        >
+          Entrar
+        </button>
+      </form>
+
+
+
+      <p class="text-center text-sm mt-4">
+        ¿No tienes cuenta?
+        <a routerLink="/auth/register" class="link link-primary font-semibold">
+          Regístrate
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
