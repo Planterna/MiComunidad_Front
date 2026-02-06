@@ -12,6 +12,12 @@ const url = environment.baseUrl;
 export class UsuarioService {
   http = inject(HttpClient);
 
+private baseUrl = `${environment.baseUrl}/Usuarios`;
+
+getUsuarios(): Observable<any[]> {
+  return this.http.get<any[]>(this.baseUrl);
+}
+
   getNombreUsuarioPorId(id: number): Observable<string> {
   return this.http
     .get<UsuarioResponse>(`${url}/Usuarios/${id}`)
