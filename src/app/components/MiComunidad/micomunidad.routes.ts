@@ -6,6 +6,8 @@ import { NotFoundPage } from './not-found-page/not-found-page';
 import { ReservaFormulario } from './reservas-crud/reserva-formulario/reserva-formulario';
 import { ReservaVista } from './reservas-crud/reserva-vista/reserva-vista';
 import { PerfilComponent } from './usuario-crud/perfil/perfil';
+import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
 
 export const miComunidadRoutes: Routes = [
   {
@@ -14,24 +16,24 @@ export const miComunidadRoutes: Routes = [
     children: [
       {
         path: '',
-        component: HomePage,   
+        component: HomePage,
       },
       {
         path: 'reserva',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaVista,
       },
       {
         path: 'reserva/formulario',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaFormulario,
       },
       {
         path: 'reserva/formulario/:id',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaFormulario,
       },
       {
@@ -40,7 +42,15 @@ export const miComunidadRoutes: Routes = [
       },
       {
         path: 'historial-uso',
-        component: NotFoundPage,
+        component: HistorialUsoVista,
+      },
+      {
+        path: 'historial-uso/formulario',
+        component: HistorialUsoFormulario,
+      },
+      {
+        path: 'historial-uso/formulario/:id',
+        component: HistorialUsoFormulario,
       },
       {
         path: 'noticia',
@@ -53,12 +63,12 @@ export const miComunidadRoutes: Routes = [
       {
         path: 'perfil',
         component: PerfilComponent,
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         canActivate: [AuthGuard],
       },
       {
         path: 'not-found',
-        component: NotFoundPage
+        component: NotFoundPage,
       },
       {
         path: '**',
