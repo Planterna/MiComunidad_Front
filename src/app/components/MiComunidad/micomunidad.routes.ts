@@ -8,6 +8,8 @@ import { ReservaVista } from './reservas-crud/reserva-vista/reserva-vista';
 import { PerfilComponent } from './usuario-crud/perfil/perfil';
 import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
 import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
+import { RecursoVista } from './recursos-crud/recurso-vista/recurso-vista';
+import { RecursoFormulario } from './recursos-crud/recurso-formulario/recurso-formulario';
 
 export const miComunidadRoutes: Routes = [
   {
@@ -38,7 +40,21 @@ export const miComunidadRoutes: Routes = [
       },
       {
         path: 'recurso',
-        component: NotFoundPage,
+        canActivate: [AuthGuard],
+        data: { roles: ['Administrador', 'Encargado'] },
+        component: RecursoVista,
+      },
+      {
+        path: 'recurso/formulario',
+        canActivate: [AuthGuard],
+        data: { roles: ['Administrador', 'Encargado'] },
+        component: RecursoFormulario,
+      },
+      {
+        path: 'recurso/formulario/:id',
+        canActivate: [AuthGuard],
+        data: { roles: ['Administrador', 'Encargado'] },
+        component: RecursoFormulario,
       },
       {
         path: 'historial-uso',
