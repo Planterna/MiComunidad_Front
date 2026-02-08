@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { dataInformation } from '../../../models/tarjetas-config.model';
-
 
 @Component({
   selector: 'app-modals-alert',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './modals-alert.html',
 })
 export class ModalsAlert {
@@ -12,6 +13,5 @@ export class ModalsAlert {
   titulo = input<string>('Confirmar Acción');
   data = input<dataInformation | null>();
 
-  // Evento que se dispara cuando el usuario acepta
   confirmar = output<void>();
 }

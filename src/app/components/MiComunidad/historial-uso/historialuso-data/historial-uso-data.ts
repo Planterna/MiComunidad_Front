@@ -53,7 +53,8 @@ export class HistorialUsoData implements OnInit {
         (item.notas ?? '').toLowerCase().includes(texto) ||
         `${item.usuario?.nombres ?? ''} ${item.usuario?.apellidos ?? ''}`
           .toLowerCase()
-          .includes(texto),
+          .includes(texto) ||
+        (item.recurso?.nombre ?? '').toLowerCase().includes(texto)
       );
     }
 
@@ -80,11 +81,13 @@ export class HistorialUsoData implements OnInit {
     const id = this.idUser();
 
     this.service.getAll().subscribe((data) => {
+      // Administrador y Encargado ven todo
       if (rol === 'Administrador' || rol === 'Encargado') {
         this.historial.set(data);
         return;
       }
 
+      // Vecino solo ve lo suyo
       if (rol === 'Vecino' && id != null) {
         this.historial.set(data.filter((x) => x.usuarioId === id));
         return;
@@ -103,7 +106,18 @@ export class HistorialUsoData implements OnInit {
     this.filtroRetrasado.set(false);
   }
 
-  private abrirModal(tipo: dataInformation, titulo: string, action?: () => void) {
+  // ===== ROLES =====
+  esAdminOEncargado(): boolean {
+    const rol = this.rolUser();
+    return rol === 'Administrador' || rol === 'Encargado';
+  }
+
+  esVecino(): boolean {
+    return this.rolUser() === 'Vecino';
+  }
+
+  // ===== MODAL =====
+  abrirModal(tipo: dataInformation, titulo: string, action?: () => void) {
     this.modalTipo.set(tipo);
     this.modalTitulo.set(titulo);
     this.pendingAction = action ?? null;
@@ -128,9 +142,9 @@ export class HistorialUsoData implements OnInit {
     this.abrirModal(ok ? 'success' : 'error', ok ? tituloOk : tituloError);
   }
 
-  desactivar(id: number): void {
-    const rol = this.rolUser();
-    if (rol !== 'Administrador' && rol !== 'Encargado' && rol !== 'Vecino') return;
+  // ===== ACCIONES ADMIN =====
+  private desactivar(id: number): void {
+    if (!this.esAdminOEncargado()) return;
 
     this.abrirModal('confirm', 'Desactivar registro', () => {
       this.service.deleteSoft(id).subscribe({
@@ -143,9 +157,8 @@ export class HistorialUsoData implements OnInit {
     });
   }
 
-  activar(id: number): void {
-    const rol = this.rolUser();
-    if (rol !== 'Administrador' && rol !== 'Encargado' && rol !== 'Vecino') return;
+  private activar(id: number): void {
+    if (!this.esAdminOEncargado()) return;
 
     this.abrirModal('confirm', 'Activar registro', () => {
       this.service.activate(id).subscribe({
@@ -158,18 +171,36 @@ export class HistorialUsoData implements OnInit {
     });
   }
 
-  esAdminOEncargado(): boolean {
-    const rol = this.rolUser();
-    return rol === 'Administrador' || rol === 'Encargado' || rol === 'Vecino';
+  // ===== Botones del template =====
+  // NUEVO: Admin navega, Vecino muestra modal "No acceso"
+  pedirNuevo(event?: Event): void {
+    if (this.esAdminOEncargado()) return;
+
+    event?.preventDefault();   // BLOQUEA el routerLink
+    event?.stopPropagation();  // Extra seguridad
+
+    this.abrirModal('error', 'No tienes acceso a esta función');
   }
 
   pedirDesactivar(id?: number): void {
     if (id == null) return;
+
+    if (!this.esAdminOEncargado()) {
+      this.abrirModal('error', 'No tienes acceso a esta función');
+      return;
+    }
+
     this.desactivar(id);
   }
 
   pedirActivar(id?: number): void {
     if (id == null) return;
+
+    if (!this.esAdminOEncargado()) {
+      this.abrirModal('error', 'No tienes acceso a esta función');
+      return;
+    }
+
     this.activar(id);
   }
 }

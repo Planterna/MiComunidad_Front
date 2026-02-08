@@ -13,18 +13,20 @@
           <input
             type="text"
             class="grow"
-            placeholder="Buscar por usuario estado o notas"
+            placeholder="Buscar por usuario, recurso, estado o notas"
             (input)="textoBusqueda.set($any($event.target).value); aplicarFiltros()"
           />
         </label>
 
         <div class="flex gap-2">
-          @if (esAdminOEncargado()) {
-            <a [routerLink]="baseFormulario()" class="btn btn-primary">
-             Nuevo
+          <!-- NUEVO: Admin navega, Vecino muestra modal "No acceso" -->
+          <a
+            [routerLink]="baseFormulario()"
+            class="btn btn-primary"
+            (click)="pedirNuevo($event)"
+          >
+            Nuevo
           </a>
-
-          }
 
           <button class="btn btn-outline" onclick="filtroModal.showModal()">
             Filtros
@@ -43,9 +45,11 @@
 
             @if (item.recurso?.imagenUrl) {
               <figure class="h-48 overflow-hidden">
-                <img [src]="item.recurso.imagenUrl"
-                     alt="Imagen del recurso"
-                     class="w-full h-full object-cover" />
+                <img
+                  [src]="item.recurso.imagenUrl"
+                  alt="Imagen del recurso"
+                  class="w-full h-full object-cover"
+                />
               </figure>
             } @else {
               <figure class="h-48 bg-base-200 flex items-center justify-center text-sm opacity-60">
@@ -55,7 +59,6 @@
 
             <div class="card-body">
 
-              <!-- Título mas bonito: no grites el id -->
               <h2 class="card-title text-primary">
                 {{ item.recurso?.nombre ?? 'Historial de uso' }}
               </h2>
@@ -76,34 +79,39 @@
               @if (item.notas) {
                 <p><strong>Notas:</strong> {{ item.notas }}</p>
               }
-             <div class="card-actions justify-end mt-4 gap-2">
 
-  @if (esAdminOEncargado()) {
+              <div class="card-actions justify-end mt-4 gap-2">
 
-    <a
-      [routerLink]="[baseFormulario(), item.id]"
-      class="btn btn-sm btn-warning"
-      [class.btn-disabled]="!item.id">
-      Editar
-    </a>
+                <!-- EDITAR: Vecino SI puede (solo verá los suyos por el filtro) -->
+                <a
+                  [routerLink]="[baseFormulario(), item.id]"
+                  class="btn btn-sm btn-warning"
+                  [class.btn-disabled]="!item.id"
+                >
+                  Editar
+                </a>
 
-    @if (item.activo === true) {
-      <button
-        class="btn btn-error btn-sm"
-        [disabled]="!item.id"
-        (click)="pedirDesactivar(item.id)">
-        Desactivar
-      </button>
-    } @else {
-      <button
-        class="btn btn-success btn-sm"
-        [disabled]="!item.id"
-        (click)="pedirActivar(item.id)">
-        Activar
-      </button>
-    }
-  }
-</div>             
+                <!-- ACTIVAR/DESACTIVAR: Admin ejecuta, Vecino muestra modal "No acceso" -->
+                @if (item.activo === true) {
+                  <button
+                    class="btn btn-error btn-sm"
+                    [disabled]="!item.id"
+                    (click)="pedirDesactivar(item.id)"
+                  >
+                    Desactivar
+                  </button>
+                } @else {
+                  <button
+                    class="btn btn-success btn-sm"
+                    [disabled]="!item.id"
+                    (click)="pedirActivar(item.id)"
+                  >
+                    Activar
+                  </button>
+                }
+
+              </div>
+
             </div>
           </div>
         }
@@ -127,19 +135,19 @@
     <label class="label cursor-pointer">
       <span class="label-text">Devuelto</span>
       <input type="checkbox" class="checkbox checkbox-success"
-             (change)="filtroDevuelto.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroDevuelto.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <label class="label cursor-pointer">
       <span class="label-text">Dañado</span>
       <input type="checkbox" class="checkbox checkbox-warning"
-             (change)="filtroDaniado.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroDaniado.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <label class="label cursor-pointer">
       <span class="label-text">Retrasado</span>
       <input type="checkbox" class="checkbox checkbox-error"
-             (change)="filtroRetrasado.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroRetrasado.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <div class="modal-action">
@@ -147,9 +155,3 @@
     </div>
   </div>
 </dialog>
-<app-modals-alert
-  [modalId]="modalId()"
-  [titulo]="modalTitulo()"
-  [data]="modalTipo()"
-  (confirmar)="confirmarAccion()">
-</app-modals-alert>

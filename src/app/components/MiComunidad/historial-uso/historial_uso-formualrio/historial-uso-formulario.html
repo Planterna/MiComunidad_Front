@@ -133,18 +133,18 @@
 
     <!-- BOTONES -->
     <div class="flex justify-between pt-6 col-span-full">
-    <a [routerLink]="rutaListado" class="btn btn-error">Regresar</a>
+      <button type="button" class="btn btn-error" (click)="regresar()">Regresar</button>
       <button type="submit" class="btn btn-primary">Guardar</button>
     </div>
 
   </form>
 
-  <!-- MODAL -->
+  <!-- MODAL (YA NO VACIO) -->
   <app-modals-alert
-    [modalId]="modalId"
-    [titulo]="modalEstado === 'success' ? 'Registro guardado' : 'Error'"
-    [data]="modalEstado"
-    (confirmar)="onModalOk()"
+    [modalId]="modalId()"
+    [titulo]="modalTitulo()"
+    [data]="modalTipo()"
+    (confirmar)="confirmarAccion()"
   >
   </app-modals-alert>
 
