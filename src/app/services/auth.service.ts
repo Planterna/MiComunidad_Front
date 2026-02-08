@@ -1,9 +1,10 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { tap } from 'rxjs';
-import { environment } from '../../environments/environments';
-import { Roles } from '../models/usuario.model';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, signal } from "@angular/core";
+import { Router } from "@angular/router";
+import { tap } from "rxjs";
+import { environment } from "../../environments/environments";
+import { Roles } from "../models/usuario.model";
+
 
 interface LoginRequest {
   email: string;
@@ -19,6 +20,7 @@ const baseUrl = environment.baseUrl;
   providedIn: 'root'
 })
 
+//! arreglar rutas porque usas las env y usas la api token y se ve feo
 
 
 export class AuthService {
@@ -40,7 +42,7 @@ export class AuthService {
  login(data: LoginRequest) {
   return this.http.post<LoginResponse>(`${this.API_URL}/login`, data).pipe(
     tap(res => {
-      localStorage.setItem(this.TOKEN_KEY, res.token);
+      sessionStorage.setItem(this.TOKEN_KEY, res.token);
       this.authSignal.set(true);
     })
   );
@@ -49,7 +51,7 @@ export class AuthService {
   // REGISTER
   // =====================
   register(data: any) {
-    return this.http.post(`${environment.baseUrl}/Auth/crear`, data);
+    return this.http.post(`${this.API_URL}/crear`, data);
   }
 
 
@@ -57,16 +59,16 @@ export class AuthService {
   // LOGOUT
   // =====================
  logout() {
-  localStorage.removeItem(this.TOKEN_KEY);
+  sessionStorage.removeItem(this.TOKEN_KEY);
   this.authSignal.set(false);
-  this.router.navigate(['/login']);
+  this.router.navigate(['/auth/login']);
 }
 
   // =====================
   // TOKEN
   // =====================
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
   // =====================
   // AUTH STATE (Navbar)

@@ -5,7 +5,10 @@
   [data]="dataModal()"
 />
 
-<div class="flex justify-center min-h-screen bg-base-200 mt-16 p-4">
+<div
+  class="flex justify-center min-h-screen bg-base-200 p-4"
+  [ngClass]="rolUser() === 'Administrador' || rolUser() === 'Encargado' ? 'mt-2' : 'mt-16'"
+>
   <div class="w-full max-w-[95%] sm:max-w-lg bg-base-100 shadow-xl rounded-2xl p-6 md:p-10">
     <h2 class="text-3xl font-extrabold text-center mb-8 font-montserrat text-primary">
       Editar Reserva
@@ -20,17 +23,20 @@
         <label class="label">
           <span class="label-text font-semibold">Nombre Vecino</span>
         </label>
-        @if(rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+        @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
           <select class="select select-primary w-full" formControlName="usuarioId">
-             @for (item of usuarioNombres(); track $index) {
-              <option [value]="item.id">{{ item.nombres }} {{item.apellidos}}</option>
+            @for (item of usuarioNombres(); track $index) {
+              <option [value]="item.id">{{ item.nombres }} {{ item.apellidos }}</option>
             }
           </select>
         }
-        @if(rolUser() === 'Vecino'){
+        @if (rolUser() === 'Vecino') {
           <select class="select select-primary w-full" formControlName="usuarioId">
-              <option [value]="usuarioId()">{{ nombreUS() }}</option>
+            <option [value]="usuarioId()">{{ nombreUS() }}</option>
           </select>
+        }
+        @if (reservaForm.get('usuarioId')?.invalid && reservaForm.get('usuarioId')?.touched) {
+          <span class="text-error text-sm">El usuario es obligatorio</span>
         }
       </div>
       <div class="form-control">
@@ -43,6 +49,9 @@
             <option [value]="item.id">{{ item.nombre }}</option>
           }
         </select>
+        @if (reservaForm.get('recursoId')?.invalid && reservaForm.get('recursoId')?.touched) {
+          <span class="text-error text-sm">Debe seleccionar un recurso</span>
+        }
       </div>
 
       <div class="form-control">
@@ -54,6 +63,9 @@
           class="input input-bordered w-full focus:input-primary transition-all"
           formControlName="fecha"
         />
+        @if (reservaForm.get('fecha')?.invalid && reservaForm.get('fecha')?.touched) {
+          <span class="text-error text-sm">La fecha es obligatoria</span>
+        }
       </div>
 
       <div class="form-control">
@@ -65,6 +77,9 @@
           class="input input-bordered w-full focus:input-primary transition-all"
           formControlName="horaInicio"
         />
+        @if (reservaForm.get('horaInicio')?.invalid && reservaForm.get('horaInicio')?.touched) {
+          <span class="text-error text-sm">La hora de inicio es obligatoria</span>
+        }
       </div>
 
       <div class="form-control">
@@ -76,6 +91,9 @@
           class="input input-bordered w-full focus:input-primary transition-all"
           formControlName="horaFin"
         />
+        @if (reservaForm.get('horaFin')?.invalid && reservaForm.get('horaFin')?.touched) {
+          <span class="text-error text-sm">La hora de fin es obligatoria</span>
+        }
       </div>
 
       <div class="form-control">
@@ -86,6 +104,15 @@
           class="textarea textarea-bordered w-full focus:textarea-primary transition-all"
           formControlName="motivo"
         ></textarea>
+        @if (reservaForm.get('motivo')?.invalid && reservaForm.get('motivo')?.touched) {
+          @if (reservaForm.get('motivo')?.errors?.['required']) {
+            <span class="text-error text-sm">El motivo es obligatorio</span>
+          }
+
+          @if (reservaForm.get('motivo')?.errors?.['minlength']) {
+            <span class="text-error text-sm"> El motivo debe tener mínimo 5 caracteres </span>
+          }
+        }
       </div>
 
       @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
@@ -116,7 +143,13 @@
 
       <div class="flex w-full items-center justify-center">
         <div class="items-start mr-3">
-          <a routerLink="/reserva" class="btn btn-error"> Regresar </a>
+          @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+            <a routerLink="/admin/reserva" class="btn btn-error"> Regresar </a>
+          }
+          <!--  -->
+          @if (rolUser() === 'Vecino') {
+            <a routerLink="/reserva" class="btn btn-error"> Regresar </a>
+          }
         </div>
 
         @if (!reservaForm.invalid && rolUser() !== null) {

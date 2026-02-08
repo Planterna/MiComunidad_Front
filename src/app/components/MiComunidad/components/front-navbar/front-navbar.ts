@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../../services/auth.service';
+import { Component, OnInit, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { AuthService } from "../../../../services/auth.service";
+import { Roles } from "../../../../models/usuario.model";
+
 
 
 @Component({
@@ -11,4 +13,6 @@ import { AuthService } from '../../../../services/auth.service';
 })
 export class FrontNavbar {
   constructor(public auth: AuthService) {}
+
+
 }

@@ -1,8 +1,9 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+
 
 @Component({
   selector: 'app-register',
@@ -64,7 +65,7 @@ export class RegisterComponent implements OnInit {
       next: (res: any) => {
         console.log('Respuesta del backend:', res);
         this.showSuccess(res?.message || 'Usuario registrado correctamente');
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+        setTimeout(() => this.router.navigate(['/auth/login']), 1500);
       },
       error: (err: any) => {
         console.error('Error del backend:', err);

@@ -1,46 +1,94 @@
-<div class="min-h-screen bg-base-200 p-6 flex justify-center">
 
-  <div class="card bg-base-100 shadow-xl w-full max-w-2xl">
-    <div class="card-body space-y-4">
+ <app-modals-alert 
+    [modalId]="modalId()"
+    [titulo]="titulo()"
+    [data]="data()">
+    </app-modals-alert>
 
-      <h2 class="card-title text-primary text-2xl">
-        Mi Perfil
-      </h2>
+<div class="pt-20" *ngIf="!cargando() && usuario()">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <form
+    [formGroup]="perfilForm"
+    (ngSubmit)="guardar()"
+    class="max-w-4xl mx-auto space-y-8 font-montserrat"
+  >
 
-        <input
-          type="text"
-          placeholder="Nombres"
-          class="input input-bordered w-full"
-        />
+    <div class="card bg-base-100 shadow border border-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-primary">Información Personal</h2>
 
-        <input
-          type="text"
-          placeholder="Apellidos"
-          class="input input-bordered w-full"
-        />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          class="input input-bordered w-full md:col-span-2"
-        />
+          <!-- CÉDULA -->
+          <input
+            class="input input-bordered"
+            formControlName="cedula"
+            readonly
+          />
 
-        <input
-          type="password"
-          placeholder="Nueva contraseña"
-          class="input input-bordered w-full md:col-span-2"
-        />
+          <!-- EMAIL -->
+          <input
+            class="input input-bordered"
+            formControlName="email"
+            readonly
+          />
+
+          <!-- NOMBRES -->
+          <input
+            class="input input-bordered"
+            formControlName="nombres"
+            placeholder="Nombres"
+          />
+
+          <!-- APELLIDOS -->
+          <input
+            class="input input-bordered"
+            formControlName="apellidos"
+            placeholder="Apellidos"
+          />
+
+          <!-- TELÉFONO -->
+          <input
+            class="input input-bordered"
+            formControlName="telefono"
+            placeholder="Teléfono"
+          />
+
+          <!-- DIRECCIÓN -->
+          <input
+            class="input input-bordered"
+            formControlName="direccion"
+            placeholder="Dirección"
+          />
+
+        </div>
+
+        <!-- CHECKBOX -->
+        <label class="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            formControlName="aceptaNotificaciones"
+          />
+          Recibir notificaciones
+        </label>
+
+        <!-- BOTÓN -->
+        <div class="card-actions justify-end mt-4">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="perfilForm.invalid"
+          >
+            Guardar Cambios
+          </button>
+        </div>
+
       </div>
-
-      <div class="card-actions justify-end">
-        <button class="btn btn-primary">
-          Guardar cambios
-        </button>
-      </div>
-
+      
     </div>
-  </div>
+
+
+  </form>
 
 </div>

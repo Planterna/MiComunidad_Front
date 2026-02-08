@@ -12,6 +12,12 @@ const url = environment.baseUrl;
 export class UsuarioService {
   http = inject(HttpClient);
 
+private baseUrl = `${environment.baseUrl}/Usuarios`;
+
+getUsuarios(): Observable<any[]> {
+  return this.http.get<any[]>(this.baseUrl);
+}
+
   getNombreUsuarioPorId(id: number): Observable<string> {
   return this.http
     .get<UsuarioResponse>(`${url}/Usuarios/${id}`)
@@ -20,6 +26,7 @@ export class UsuarioService {
     );
   }
 
+
   getNombreUsuarioCompleto(): Observable<UsuarioResponse[]> {
     return this.http.get<UsuarioResponse[]>(`${url}/Usuarios`);
   }
@@ -27,6 +34,12 @@ export class UsuarioService {
   getUsuarioPorId(id: number) {
   return this.http.get<UsuarioResponse>(`${url}/Usuarios/${id}`);
 }
+
+actualizarUsuario(usuario: UsuarioResponse) {
+    console.log('Actualizando usuario:', usuario);
+    return this.http.put(`${url}/Usuarios/${usuario.id}`, usuario);
+    
+  }
 
 }
       

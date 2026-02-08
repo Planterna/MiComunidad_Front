@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { Component, signal } from "@angular/core";
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { RouterLink, Router } from "@angular/router";
+import { AuthService } from "../../../services/auth.service";
+
 
 @Component({
   selector: 'app-login',
@@ -40,7 +41,7 @@ export class LoginComponent {
           const rol = this.auth.getRole();
 
           if (rol === 'Administrador') {
-            this.router.navigate(['/usuario/dashboard']);
+            this.router.navigate(['/admin/dashboard']);
           } else {
             this.router.navigate(['/']);
           }

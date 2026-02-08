@@ -1,86 +1,17 @@
-import { Routes } from '@angular/router'; 
-import { HomePage } from './components/MiComunidad/home-page/home-page';
-import { NotFoundPage } from './components/MiComunidad/not-found-page/not-found-page';
-import { ReservaVista } from './components/MiComunidad/reservas-crud/reserva-vista/reserva-vista';
-import { ReservaFormulario } from './components/MiComunidad/reservas-crud/reserva-formulario/reserva-formulario';
-import { RecursoVista } from './components/MiComunidad/recursos-crud/recurso-vista/recurso-vista';
-import { RecursoFormulario } from './components/MiComunidad/recursos-crud/recurso-formulario/recurso-formulario';
-import { LoginComponent } from './auth/components/login/login';
-import { RegisterComponent } from './auth/components/register/register';
+import { Routes } from '@angular/router';
 import { AuthGuard } from './auth/guard/auth.guard';
-import { DashboardComponent } from './components/MiComunidad/usuario-crud/dashboard/dashboard';
-import { PerfilComponent } from './components/MiComunidad/usuario-crud/perfil/perfil';
 
 export const routes: Routes = [
   {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes'),
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin-dashboard/admin-dashboard.routes'),
+  },
+  {
     path: '',
-    component: HomePage,
-    pathMatch: 'full',
+    loadChildren: () => import('./components/MiComunidad/micomunidad.routes'),
   },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AuthGuard],
-    data: { roles: ['Administrador'] }
-  },
-  {
-    path: 'perfil',
-    component: PerfilComponent,
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
-  {
-    path: 'register',
-    component: RegisterComponent,
-  },
-  {
-    path: 'reserva',
-    canActivate: [AuthGuard],
-    component: ReservaVista,
-  },
-  {
-    path: 'reserva/formulario',
-    canActivate: [AuthGuard],
-    component: ReservaFormulario,
-  },
-  {
-    path: 'reserva/formulario/:id',
-    canActivate: [AuthGuard],
-    component: ReservaFormulario,
-  },
-  {
-    path: 'recurso',
-    canActivate: [AuthGuard],
-    component: RecursoVista,
-  },
-  {
-    path: 'recurso/formulario',
-    canActivate: [AuthGuard],
-    component: RecursoFormulario,
-  },
-  {
-    path: 'recurso/formulario/:id',
-    canActivate: [AuthGuard],
-    component: RecursoFormulario,
-  },
-  {
-    path: 'historial-uso',
-    component: NotFoundPage,
-  },
-  {
-    path: 'noticia',
-    component: NotFoundPage,
-  },
-  {
-    path: 'user',
-    component: NotFoundPage,
-  },
-  {
-    path: '**',
-    component: NotFoundPage,
-  },
-
 ];

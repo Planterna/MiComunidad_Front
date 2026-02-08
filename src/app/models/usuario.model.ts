@@ -25,4 +25,4 @@ export enum Estado {
 }
 
 
-export type Roles = 'Administrador' | 'Encargado' | 'Vecino';
+export type Roles = 'Administrador' | 'Encargado' | 'Vecino' | '';

@@ -22,6 +22,12 @@
             <i class="bi bi-tools text-lg"></i>
             Recursos
           </button>
+          @if (rol === 'Administrador' || rol === 'Encargado') {
+            <button routerLink="/admin/dashboard" class="btn btn-primary btn-wide shadow-sm">
+              <i class="bi bi-tools text-lg"></i>
+              Dashboard
+            </button>
+          }
         </div>
       </div>
     </div>
@@ -139,7 +145,10 @@
             Instalaciones y recursos a disposición de toda nuestra comunidad con un solo clic.
           </p>
           <div class="card-actions justify-center mt-4">
-            <button routerLink="reserva" class="btn btn-primary btn-wide btn-sm md:btn-md text-white shadow-md">
+            <button
+              routerLink="reserva"
+              class="btn btn-primary btn-wide btn-sm md:btn-md text-white shadow-md"
+            >
               Reserva Ahora!
             </button>
           </div>
@@ -162,7 +171,10 @@
             Encuentra herramientas y elementos disponibles para facilitar tus tareas diarias.
           </p>
           <div class="card-actions justify-center mt-4">
-            <button routerLink="/recurso" class="btn btn-primary btn-wide btn-sm md:btn-md text-white shadow-md">
+            <button
+              routerLink="/recurso"
+              class="btn btn-primary btn-wide btn-sm md:btn-md text-white shadow-md"
+            >
               Ver Recursos!
             </button>
           </div>
