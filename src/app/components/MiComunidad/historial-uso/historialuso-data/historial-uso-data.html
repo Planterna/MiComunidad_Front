@@ -1,43 +1,31 @@
 <div class="min-h-screen bg-base-white pt-24 pb-10 px-6 font-montserrat">
-
   <div class="max-w-7xl mx-auto">
 
-    <!-- TÍTULO -->
     <h2 class="text-3xl font-extrabold text-primary mb-8 text-center">
       Historial de Uso
     </h2>
 
-    <!-- CARD CONTENEDORA -->
     <div class="bg-base-100 rounded-2xl shadow-xl p-6">
 
-      <!-- ACCIONES SUPERIORES -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-        <!-- BUSCADOR -->
         <label class="input input-bordered flex items-center gap-2 w-full md:max-w-sm">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               class="h-4 w-4 opacity-60"
-               fill="none"
-               viewBox="0 0 24 24"
-               stroke="currentColor">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-
           <input
             type="text"
             class="grow"
-            placeholder="Buscar por usuario, estado o notas"
+            placeholder="Buscar por usuario, recurso, estado o notas"
             (input)="textoBusqueda.set($any($event.target).value); aplicarFiltros()"
           />
         </label>
 
-        <!-- BOTONES -->
         <div class="flex gap-2">
-          <a routerLink="/historial-uso/formulario" class="btn btn-primary">
-            + Nuevo
+          <!-- NUEVO: Admin navega, Vecino muestra modal "No acceso" -->
+          <a
+            [routerLink]="baseFormulario()"
+            class="btn btn-primary"
+            (click)="pedirNuevo($event)"
+          >
+            Nuevo
           </a>
 
           <button class="btn btn-outline" onclick="filtroModal.showModal()">
@@ -50,14 +38,11 @@
         </div>
       </div>
 
-      <!-- TARJETAS -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
         @for (item of historialFiltrado(); track item.id) {
 
           <div class="card bg-base-100 shadow-lg border">
 
-            <!-- IMAGEN -->
             @if (item.recurso?.imagenUrl) {
               <figure class="h-48 overflow-hidden">
                 <img
@@ -74,69 +59,75 @@
 
             <div class="card-body">
 
-              <!-- TÍTULO -->
               <h2 class="card-title text-primary">
-                Historial #{{ item.id }}
+                {{ item.recurso?.nombre ?? 'Historial de uso' }}
               </h2>
+              <p class="text-xs opacity-60">Registro número {{ item.id }}</p>
 
-              <!-- DATOS -->
-              <p>
-                <strong>Usuario:</strong>
-                {{ item.usuario?.nombres }} {{ item.usuario?.apellidos }}
-              </p>
-
-              <p><strong>Recurso:</strong> {{ item.recurso?.nombre }}</p>
+              <p><strong>Usuario:</strong> {{ item.usuario?.nombres }} {{ item.usuario?.apellidos }}</p>
               <p><strong>Fecha:</strong> {{ item.fechaUso | date:'yyyy-MM-dd' }}</p>
               <p><strong>Hora Inicio:</strong> {{ item.horaInicio }}</p>
               <p><strong>Hora Fin:</strong> {{ item.horaFin }}</p>
 
-              <!-- ESTADO -->
               <p>
                 <strong>Estado:</strong>
-                <span class="badge badge-success" *ngIf="item.estado === 'Devuelto'">
-                  Devuelto
-                </span>
-                <span class="badge badge-warning" *ngIf="item.estado === 'Dañado'">
-                  Dañado
-                </span>
-                <span class="badge badge-error" *ngIf="item.estado === 'Retrasado'">
-                  Retrasado
-                </span>
+                <span class="badge badge-success" *ngIf="item.estado === 'Devuelto'">Devuelto</span>
+                <span class="badge badge-warning" *ngIf="item.estado === 'Dañado'">Dañado</span>
+                <span class="badge badge-error" *ngIf="item.estado === 'Retrasado'">Retrasado</span>
               </p>
 
-              <!-- NOTAS -->
               @if (item.notas) {
                 <p><strong>Notas:</strong> {{ item.notas }}</p>
               }
 
-              <!-- ACCIONES -->
               <div class="card-actions justify-end mt-4 gap-2">
+
+                <!-- EDITAR: Vecino SI puede (solo verá los suyos por el filtro) -->
                 <a
-                  [routerLink]="['/historial-uso/formulario/', item.id]"
-                  class="btn btn-sm btn-warning">
+                  [routerLink]="[baseFormulario(), item.id]"
+                  class="btn btn-sm btn-warning"
+                  [class.btn-disabled]="!item.id"
+                >
                   Editar
                 </a>
 
-                <button
-                 class="btn btn-sm btn-error"
-                 *ngIf="item.id"
-                  (click)="eliminar(item.id)">
-                  Eliminar
+                <!-- ACTIVAR/DESACTIVAR: Admin ejecuta, Vecino muestra modal "No acceso" -->
+                @if (item.activo === true) {
+                  <button
+                    class="btn btn-error btn-sm"
+                    [disabled]="!item.id"
+                    (click)="pedirDesactivar(item.id)"
+                  >
+                    Desactivar
                   </button>
+                } @else {
+                  <button
+                    class="btn btn-success btn-sm"
+                    [disabled]="!item.id"
+                    (click)="pedirActivar(item.id)"
+                  >
+                    Activar
+                  </button>
+                }
 
               </div>
 
             </div>
           </div>
-
         }
-
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL DE FILTROS -->
+<!-- MODAL REUTILIZABLE -->
+<app-modals-alert
+  [modalId]="modalId()"
+  [titulo]="modalTitulo()"
+  [data]="modalTipo()"
+  (confirmar)="confirmarAccion()">
+</app-modals-alert>
+
 <dialog id="filtroModal" class="modal">
   <div class="modal-box max-w-sm">
     <h3 class="font-bold text-lg mb-4">Filtrar por estado</h3>
@@ -144,19 +135,19 @@
     <label class="label cursor-pointer">
       <span class="label-text">Devuelto</span>
       <input type="checkbox" class="checkbox checkbox-success"
-             (change)="filtroDevuelto.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroDevuelto.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <label class="label cursor-pointer">
       <span class="label-text">Dañado</span>
       <input type="checkbox" class="checkbox checkbox-warning"
-             (change)="filtroDaniado.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroDaniado.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <label class="label cursor-pointer">
       <span class="label-text">Retrasado</span>
       <input type="checkbox" class="checkbox checkbox-error"
-             (change)="filtroRetrasado.set($event.target.checked); aplicarFiltros()" />
+             (change)="filtroRetrasado.set($any($event.target).checked); aplicarFiltros()" />
     </label>
 
     <div class="modal-action">

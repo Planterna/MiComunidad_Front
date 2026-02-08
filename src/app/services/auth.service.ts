@@ -1,10 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable, signal } from "@angular/core";
-import { Router } from "@angular/router";
-import { tap } from "rxjs";
-import { environment } from "../../environments/environments";
-import { Roles } from "../models/usuario.model";
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { tap } from 'rxjs';
+import { environment } from '../../environments/environments';
+import { Roles } from '../models/usuario.model';
 
 interface LoginRequest {
   email: string;
@@ -14,118 +13,113 @@ interface LoginRequest {
 interface LoginResponse {
   token: string;
 }
-const baseUrl = environment.baseUrl;
 
-@Injectable({
-  providedIn: 'root'
-})
-
-//! arreglar rutas porque usas las env y usas la api token y se ve feo
-
-
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-
-  private readonly API_URL = `${baseUrl}/Auth`;
+  private readonly API_URL = `${environment.baseUrl}/Auth`;
   private readonly TOKEN_KEY = 'token';
-
-
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
 
   authSignal = signal<boolean>(this.isLoggedIn());
 
-  // =====================
-  // LOGIN
-  // =====================
- login(data: LoginRequest) {
-  return this.http.post<LoginResponse>(`${this.API_URL}/login`, data).pipe(
-    tap(res => {
-      sessionStorage.setItem(this.TOKEN_KEY, res.token);
-      this.authSignal.set(true);
-    })
-  );
-}
-  // =====================
-  // REGISTER
-  // =====================
+  constructor(private http: HttpClient, private router: Router) {}
+
+  login(data: LoginRequest) {
+    return this.http.post<LoginResponse>(`${this.API_URL}/login`, data).pipe(
+      tap((res) => {
+        sessionStorage.setItem(this.TOKEN_KEY, res.token);
+        this.authSignal.set(true);
+      }),
+    );
+  }
+
   register(data: any) {
     return this.http.post(`${this.API_URL}/crear`, data);
   }
 
+  logout() {
+    sessionStorage.removeItem(this.TOKEN_KEY);
+    this.authSignal.set(false);
+    this.router.navigate(['/auth/login']);
+  }
 
-  // =====================
-  // LOGOUT
-  // =====================
- logout() {
-  sessionStorage.removeItem(this.TOKEN_KEY);
-  this.authSignal.set(false);
-  this.router.navigate(['/auth/login']);
-}
-
-  // =====================
-  // TOKEN
-  // =====================
   getToken(): string | null {
     return sessionStorage.getItem(this.TOKEN_KEY);
   }
-  // =====================
-  // AUTH STATE (Navbar)
-  // =====================
-  isLoggedIn() {
-    return !!this.getToken();
+
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    const payload = this.getUserFromToken();
+    const exp = payload?.exp;
+
+    if (!exp) return true; // si no hay exp, lo damos como válido
+    const now = Math.floor(Date.now() / 1000);
+    return exp > now;
   }
 
-  // =====================
-  // DECODE JWT (sin librerías)
-  // =====================
+  private decodeBase64Url(base64Url: string): string {
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+    return atob(padded);
+  }
+
   getUserFromToken(): any | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
       const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
+      const json = this.decodeBase64Url(payload);
+      return JSON.parse(json);
     } catch {
       return null;
     }
   }
 
   getRole(): Roles | null {
-  const user = this.getUserFromToken();
-  if (!user) return null;
+    const user = this.getUserFromToken();
+    if (!user) return null;
 
-  return (
-    user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] as Roles
-  ) ?? null;
+    const raw =
+      user['role'] ||
+      user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
+    const role = (raw ?? '').toString().trim();
+    return (role as Roles) ?? null;
   }
 
   getEmail(): string | null {
     const user = this.getUserFromToken();
     if (!user) return null;
 
-  return (
-    user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']
-  ) ?? null;
+    const raw =
+      user['email'] ||
+      user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+
+    return (raw ?? '').toString().trim() || null;
   }
 
   getId(): number | null {
-  const user = this.getUserFromToken();
-  if (!user) return null;
+    const user = this.getUserFromToken();
+    if (!user) return null;
 
-  const id =
-    user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+    const raw =
+      user['sub'] ||
+      user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
 
-  return id ? Number(id) : null;
-}
+    const id = (raw ?? '').toString().trim();
+    return id ? Number(id) : null;
+  }
 
   getNombreCompleto(): string | null {
-  const user = this.getUserFromToken();
-  if (!user) return null;
-  return `${user.nombre} ${user.apellido}`;
-}
+    const user = this.getUserFromToken();
+    if (!user) return null;
 
+    const nombre = (user['nombre'] ?? '').toString().trim();
+    const apellido = (user['apellido'] ?? '').toString().trim();
 
+    const full = `${nombre} ${apellido}`.trim();
+    return full || null;
+  }
 }
