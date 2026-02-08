@@ -11,9 +11,7 @@ const url = environment.baseUrl;
 export class RecursoService {
   http = inject(HttpClient);
 
-  // Obtener recursos con información completa (simulando endpoint Full)
   getRecursosDataFull(): Observable<any[]> {
-    // Combinar recursos con tipos en una sola operación
     return this.http.get<RecursoResponse[]>(`${url}/Recursos`).pipe(
       switchMap(recursos => 
         this.http.get<any[]>(`${url}/TipoRecursoes`).pipe(
@@ -30,56 +28,42 @@ export class RecursoService {
     );
   }
 
-  // Obtener todos los recursos (método original)
   getRecurso(): Observable<RecursoResponse[]>{
     return this.http.get<RecursoResponse[]>(`${url}/Recursos`);
   }
 
-  // Obtener recurso por ID
   getRecursoPorId(id: number): Observable<RecursoResponse> {
     return this.http.get<RecursoResponse>(`${url}/Recursos/${id}`);
   }
 
-  // Obtener solo el nombre del recurso por ID
   getNombreRecursoPorId(id: number): Observable<string> {
     return this.http
       .get<RecursoResponse>(`${url}/Recursos/${id}`)
       .pipe(map((recurso) => `${recurso.nombre}`));
   }
 
-  // Crear nuevo recurso
   crearRecurso(recurso: any): Observable<RecursoResponse> {
-    // Estructura basada en el esquema de Swagger, pero solo campos necesarios
     const recursoParaCrear = {
       tipoRecursoId: recurso.tipoRecursoId,
       nombre: recurso.nombre,
-      capacidad: recurso.capacidad || 0,  // Swagger muestra que espera número, no null
-      stock: recurso.stock || 0,          // Swagger muestra que espera número, no null
-      ubicacion: recurso.ubicacion || "", // Swagger muestra que espera string, no null
-      imagenUrl: recurso.imagenUrl || "", // Swagger muestra que espera string, no null
+      capacidad: recurso.capacidad || 0,
+      stock: recurso.stock || 0,
+      ubicacion: recurso.ubicacion || "",
+      imagenUrl: recurso.imagenUrl || "",
       estado: recurso.estado || "Disponible"
-      // NO incluir: id, fechaCreacion, fechaModificacion, historialUsos, reservas, tipoRecurso
     };
-    
-    console.log('🚀 ENVIANDO SEGÚN SWAGGER:', JSON.stringify(recursoParaCrear, null, 2));
-    console.log('🌐 URL:', `${url}/Recursos`);
     
     return this.http.post<RecursoResponse>(`${url}/Recursos`, recursoParaCrear);
   }
 
-  // Actualizar recurso existente
   actualizarRecurso(recurso: any): Observable<void> {
-    console.log('Servicio - Actualizando recurso:', recurso);
-    console.log('URL:', `${url}/Recursos/${recurso.id}`);
     return this.http.put<void>(`${url}/Recursos/${recurso.id}`, recurso);
   }
 
-  // Eliminar recurso
   eliminarRecurso(id: number): Observable<void> {
     return this.http.delete<void>(`${url}/Recursos/${id}`);
   }
 
-  // Buscar recursos por nombre (optimizado)
   buscarRecursosPorNombre(nombre: string): Observable<any[]> {
     return this.getRecursosDataFull().pipe(
       map(recursos => recursos.filter(r => 
@@ -88,14 +72,12 @@ export class RecursoService {
     );
   }
 
-  // Filtrar recursos por estado (optimizado)
   filtrarRecursosPorEstado(estado: string): Observable<any[]> {
     return this.getRecursosDataFull().pipe(
       map(recursos => recursos.filter(r => r.estado === estado))
     );
   }
 
-  // Eliminar recurso (eliminación lógica)
   eliminarRecursoLogico(id: number): Observable<any> {
     return this.getRecursoPorId(id).pipe(
       switchMap(recurso => 
@@ -115,7 +97,6 @@ export class RecursoService {
     );
   }
 
-  // Activar recurso
   activarRecurso(id: number): Observable<any> {
     return this.getRecursoPorId(id).pipe(
       switchMap(recurso => 

@@ -15,23 +15,19 @@ import { Roles } from '../../../../models/usuario.model';
   templateUrl: './recurso-data.html',
 })
 export class RecursoData implements OnInit {
-  //! DI
   recursoServicio = inject(RecursoService);
   tipoRecursoServicio = inject(TipoRecursoService);
   authServicio = inject(AuthService);
 
-  //! Config
   modalId = 'modal-recurso';
   tituloModal = signal<string>('');
   dataModal = signal<dataInformation | null>(null);
   recursoIdForEliminated = signal<number | null>(null);
 
-  //! Data
   recursos = signal<any[]>([]);
   rolUser = signal<Roles | null>(null);
   idUser = signal<number | null>(null);
 
-  //! Metodos Crud
   ngOnInit(): void {
     this.cargarData();
   }
@@ -44,7 +40,6 @@ export class RecursoData implements OnInit {
       this.rolUser.set(rol);
       this.idUser.set(id);
       
-      // Una sola petición optimizada que trae todo
       this.recursoServicio.getRecursosDataFull().subscribe((recursos) => {
         this.recursos.set(recursos);
       });
@@ -54,13 +49,11 @@ export class RecursoData implements OnInit {
   eliminarData() {
     const id = this.recursoIdForEliminated();
     if (id) {
-      // Usar el método optimizado del servicio
       this.recursoServicio.eliminarRecursoLogico(id).subscribe({
         next: () => {
           this.modalStatusSuccess();
         },
-        error: (error) => {
-          console.error('Error al eliminar:', error);
+        error: () => {
           this.modalStatusError();
         }
       });
@@ -71,13 +64,11 @@ export class RecursoData implements OnInit {
 
   activarData(valueId: number) {
     if (valueId) {
-      // Usar el método optimizado del servicio
       this.recursoServicio.activarRecurso(valueId).subscribe({
         next: () => {
           this.modalStatusSuccess();
         },
-        error: (error) => {
-          console.error('Error al activar:', error);
+        error: () => {
           this.modalStatusError();
         }
       });
@@ -86,7 +77,6 @@ export class RecursoData implements OnInit {
     }
   }
 
-  //! Filtro y Busqueda
   buscarDato(event: any) {
     const texto = event.target.value.toLowerCase().trim();
 
@@ -95,7 +85,6 @@ export class RecursoData implements OnInit {
       return;
     }
 
-    // Usar método optimizado
     this.recursoServicio.buscarRecursosPorNombre(texto).subscribe((recursos) => {
       this.recursos.set(recursos);
     });
@@ -109,13 +98,11 @@ export class RecursoData implements OnInit {
       return;
     }
 
-    // Usar método optimizado
     this.recursoServicio.filtrarRecursosPorEstado(texto).subscribe((recursos) => {
       this.recursos.set(recursos);
     });
   }
 
-  //! Modal
   abrirConfirmacion(id: number) {
     this.tituloModal.set('Confirmar Eliminación');
     this.dataModal.set('confirm');
