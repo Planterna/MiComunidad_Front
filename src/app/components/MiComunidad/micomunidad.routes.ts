@@ -10,6 +10,7 @@ import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historial
 import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
 import { RecursoVista } from './recursos-crud/recurso-vista/recurso-vista';
 import { RecursoFormulario } from './recursos-crud/recurso-formulario/recurso-formulario';
+import { RecursoGuard } from './recursos-crud/recurso.guard';
 
 export const miComunidadRoutes: Routes = [
   {
@@ -41,18 +42,18 @@ export const miComunidadRoutes: Routes = [
       {
         path: 'recurso',
         canActivate: [AuthGuard],
-        data: { roles: ['Administrador', 'Encargado'] },
+        data: { roles: ['Administrador', 'Encargado', 'Vecino'] },
         component: RecursoVista,
       },
       {
         path: 'recurso/formulario',
-        canActivate: [AuthGuard],
+        canActivate: [RecursoGuard],
         data: { roles: ['Administrador', 'Encargado'] },
         component: RecursoFormulario,
       },
       {
         path: 'recurso/formulario/:id',
-        canActivate: [AuthGuard],
+        canActivate: [RecursoGuard],
         data: { roles: ['Administrador', 'Encargado'] },
         component: RecursoFormulario,
       },

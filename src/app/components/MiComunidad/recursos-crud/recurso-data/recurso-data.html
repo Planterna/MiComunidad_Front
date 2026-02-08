@@ -17,7 +17,9 @@
       </svg>
     </label>
 
-    <button routerLink="formulario" class="btn btn-primary">Nuevo Recurso</button>
+    @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
+      <button routerLink="formulario" class="btn btn-primary">Nuevo Recurso</button>
+    }
   </div>
 
   <!-- Filtro de estado -->
@@ -79,7 +81,7 @@
             </span>
           </div>
 
-          <!-- Botones de acción -->
+          <!-- Botones de acción para Admin y Encargado -->
           @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
             <div class="card-actions justify-center mt-4">
               <button
@@ -105,29 +107,6 @@
                 </svg>
               </button>
               
-              <!-- Botón de eliminar - siempre visible para admin -->
-              <button
-                class="btn btn-circle btn-outline btn-error"
-                (click)="abrirConfirmacion(recurso.id)"
-                title="Eliminar"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-
-              <!-- Botón de cambiar estado - solo si no está disponible -->
               @if (recurso.estado !== 'Disponible') {
                 <button
                   class="btn btn-circle btn-outline btn-success"
@@ -149,6 +128,32 @@
                   </svg>
                 </button>
               }
+            </div>
+          }
+          
+          <!-- Botón de eliminar solo para Administrador -->
+          @if (rolUser() === 'Administrador') {
+            <div class="card-actions justify-center mt-2">
+              <button
+                class="btn btn-circle btn-outline btn-error"
+                (click)="abrirConfirmacion(recurso.id)"
+                title="Eliminar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
           }
         </div>
