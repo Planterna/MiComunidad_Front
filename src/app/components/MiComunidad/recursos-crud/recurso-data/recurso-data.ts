@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RecursoService } from '../../../../services/recurso.service';
 import { TipoRecursoService } from '../../../../services/tipo-recurso.service';
-import { RecursoResponse } from '../../../../models/recurso.model';
 import { dataInformation } from '../../../../models/tarjetas-config.model';
 import { ModalsAlert } from '../../../shared/modals-alert/modals-alert';
 import { AuthService } from '../../../../services/auth.service';
