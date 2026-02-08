@@ -6,6 +6,8 @@ import { ReservaData } from '../components/MiComunidad/reservas-crud/reserva-dat
 import { ReservaFormulario } from '../components/MiComunidad/reservas-crud/reserva-formulario/reserva-formulario';
 import { PerfilComponent } from '../components/MiComunidad/usuario-crud/perfil/perfil';
 import { UsuariosComponent } from '../components/MiComunidad/usuario-crud/usuario-tabla/usuario-tabla';
+import { RecursoData } from '../components/MiComunidad/recursos-crud/recurso-data/recurso-data';
+import { RecursoFormulario } from '../components/MiComunidad/recursos-crud/recurso-formulario/recurso-formulario';
 
 export const adminDashboardRoutes: Routes = [
   {
@@ -31,6 +33,18 @@ export const adminDashboardRoutes: Routes = [
         component: ReservaFormulario,
       },
       {
+        path: 'recurso',
+        component: RecursoData,
+      },
+      {
+        path: 'recurso/formulario',
+        component: RecursoFormulario,
+      },
+      {
+        path: 'recurso/formulario/:id',
+        component: RecursoFormulario,
+      },
+      {
         path: 'perfil/:id',
         component: PerfilComponent,
       },
@@ -38,11 +52,6 @@ export const adminDashboardRoutes: Routes = [
         path: 'usuario',
         component: UsuariosComponent,
       },
-      //! Añadir para el resto de campos del dashboard, tambien se usa la misma ruta que las paginas normales para usuario
-      // {
-      //   path: 'recurso',
-      //   component: RecursosAdmin,
-      // },
       {
         path: '**',
         redirectTo: 'dashboard',

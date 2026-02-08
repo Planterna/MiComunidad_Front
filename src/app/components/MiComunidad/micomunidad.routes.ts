@@ -10,7 +10,6 @@ import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historial
 import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
 import { RecursoVista } from './recursos-crud/recurso-vista/recurso-vista';
 import { RecursoFormulario } from './recursos-crud/recurso-formulario/recurso-formulario';
-import { RecursoGuard } from './recursos-crud/recurso.guard';
 
 export const miComunidadRoutes: Routes = [
   {
@@ -24,19 +23,19 @@ export const miComunidadRoutes: Routes = [
       {
         path: 'reserva',
         canActivate: [AuthGuard],
-        data: { roles: ['Vecino'] },
+        data: { roles: ['Administrador', 'Encargado', 'Vecino'] },
         component: ReservaVista,
       },
       {
         path: 'reserva/formulario',
         canActivate: [AuthGuard],
-        data: { roles: ['Vecino'] },
+        data: { roles: ['Administrador', 'Encargado', 'Vecino'] },
         component: ReservaFormulario,
       },
       {
         path: 'reserva/formulario/:id',
         canActivate: [AuthGuard],
-        data: { roles: ['Vecino'] },
+        data: { roles: ['Administrador', 'Encargado', 'Vecino'] },
         component: ReservaFormulario,
       },
       {
@@ -47,13 +46,13 @@ export const miComunidadRoutes: Routes = [
       },
       {
         path: 'recurso/formulario',
-        canActivate: [RecursoGuard],
+        canActivate: [AuthGuard],
         data: { roles: ['Administrador', 'Encargado'] },
         component: RecursoFormulario,
       },
       {
         path: 'recurso/formulario/:id',
-        canActivate: [RecursoGuard],
+        canActivate: [AuthGuard],
         data: { roles: ['Administrador', 'Encargado'] },
         component: RecursoFormulario,
       },

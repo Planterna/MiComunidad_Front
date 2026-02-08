@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecursoService } from '../../../../services/recurso.service';
 import { TipoRecursoService, TipoRecursoResponse } from '../../../../services/tipo-recurso.service';
 import { RecursoResponse } from '../../../../models/recurso.model';
@@ -12,7 +12,7 @@ import { Roles } from '../../../../models/usuario.model';
 @Component({
   selector: 'app-recurso-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ModalsAlert],
+  imports: [ReactiveFormsModule, ModalsAlert],
   templateUrl: './recurso-formulario.html',
 })
 export class RecursoFormulario implements OnInit {
@@ -110,7 +110,12 @@ export class RecursoFormulario implements OnInit {
         next: () => {
           this.modalStatusSuccess();
           setTimeout(() => {
-            this.router.navigate(['/recurso']);
+            const rol = this.rolUser();
+            if (rol === 'Administrador' || rol === 'Encargado') {
+              this.router.navigate(['/admin/recurso']);
+            } else {
+              this.router.navigate(['/recurso']);
+            }
           }, 2000);
         },
         error: () => {
@@ -132,7 +137,12 @@ export class RecursoFormulario implements OnInit {
         next: () => {
           this.modalStatusSuccess();
           setTimeout(() => {
-            this.router.navigate(['/recurso']);
+            const rol = this.rolUser();
+            if (rol === 'Administrador' || rol === 'Encargado') {
+              this.router.navigate(['/admin/recurso']);
+            } else {
+              this.router.navigate(['/recurso']);
+            }
           }, 2000);
         },
         error: () => {
@@ -147,6 +157,15 @@ export class RecursoFormulario implements OnInit {
     this.dataModal.set('confirm');
     const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
     if (check) check.checked = true;
+  }
+
+  cancelar() {
+    const rol = this.rolUser();
+    if (rol === 'Administrador' || rol === 'Encargado') {
+      this.router.navigate(['/admin/recurso']);
+    } else {
+      this.router.navigate(['/recurso']);
+    }
   }
 
   modalStatusSuccess() {
