@@ -23,7 +23,7 @@ export class TipoRecursoService {
     return this.http.get<TipoRecursoResponse[]>(`${url}/TipoRecursoes`);
   }
 
-  // Obtener tipo de recurso por ID
+  // Obtener tipo de recurso por id
   getTipoRecursoPorId(id: number): Observable<TipoRecursoResponse> {
     return this.http.get<TipoRecursoResponse>(`${url}/TipoRecursoes/${id}`);
   }

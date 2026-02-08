@@ -37,7 +37,11 @@
   <!-- Grid de tarjetas -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl m-auto font-montserrat">
     @for (recurso of recursos(); track recurso.id) {
-      <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-300">
+      <div 
+        class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group border border-base-300"
+        [class.cursor-pointer]="rolUser() === 'Vecino'"
+        (click)="rolUser() === 'Vecino' ? verDetalles(recurso.id) : null"
+      >
         <figure class="h-56 relative overflow-hidden">
           @if (recurso.imagenUrl) {
             <img
@@ -175,3 +179,80 @@
     (confirmar)="eliminarData()"
   ></app-modals-alert>
 </div>
+
+
+<!-- Modal de detalles del recurso -->
+<dialog id="modal-detalle-recurso" class="modal">
+  <div class="modal-box max-w-2xl">
+    @if (recursoSeleccionado()) {
+      <h3 class="font-bold text-2xl mb-4">{{ recursoSeleccionado()?.nombre }}</h3>
+      
+      @if (recursoSeleccionado()?.imagenUrl) {
+        <figure class="mb-4">
+          <img [src]="recursoSeleccionado()?.imagenUrl" [alt]="recursoSeleccionado()?.nombre" class="w-full h-64 object-cover rounded-lg" />
+        </figure>
+      }
+      
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">Tipo:</span>
+          <span>{{ recursoSeleccionado()?.tipoRecursoNombre }}</span>
+        </div>
+        
+        @if (recursoSeleccionado()?.capacidad) {
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Capacidad:</span>
+            <span>{{ recursoSeleccionado()?.capacidad }} personas</span>
+          </div>
+        }
+        
+        @if (recursoSeleccionado()?.stock) {
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Stock:</span>
+            <span>{{ recursoSeleccionado()?.stock }} unidades</span>
+          </div>
+        }
+        
+        @if (recursoSeleccionado()?.ubicacion) {
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Ubicación:</span>
+            <span>{{ recursoSeleccionado()?.ubicacion }}</span>
+          </div>
+        }
+        
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">Estado:</span>
+          <span
+            class="badge"
+            [class.badge-success]="recursoSeleccionado()?.estado === 'Disponible'"
+            [class.badge-warning]="recursoSeleccionado()?.estado === 'Ocupado'"
+            [class.badge-error]="recursoSeleccionado()?.estado === 'Mantenimiento'"
+          >
+            {{ recursoSeleccionado()?.estado }}
+          </span>
+        </div>
+        
+        @if (recursoSeleccionado()?.stock) {
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Stock disponible:</span>
+            <span>{{ recursoSeleccionado()?.stock }} unidades</span>
+          </div>
+        }
+        
+        @if (recursoSeleccionado()?.fechaCreacion) {
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Fecha de creación:</span>
+            <span>{{ recursoSeleccionado()?.fechaCreacion | date:'dd/MM/yyyy' }}</span>
+          </div>
+        }
+      </div>
+      
+      <div class="modal-action">
+        <button class="btn" (click)="cerrarDetalles()">Cerrar</button>
+      </div>
+    }
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="cerrarDetalles()">close</button>
+  </form>
+</dialog>

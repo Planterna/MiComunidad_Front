@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { RecursoService } from '../../../../services/recurso.service';
 import { TipoRecursoService } from '../../../../services/tipo-recurso.service';
 import { dataInformation } from '../../../../models/tarjetas-config.model';
@@ -10,7 +11,7 @@ import { Roles } from '../../../../models/usuario.model';
 @Component({
   selector: 'app-recurso-data',
   standalone: true,
-  imports: [RouterLink, ModalsAlert],
+  imports: [RouterLink, ModalsAlert, DatePipe],
   templateUrl: './recurso-data.html',
 })
 export class RecursoData implements OnInit {
@@ -26,6 +27,7 @@ export class RecursoData implements OnInit {
   recursos = signal<any[]>([]);
   rolUser = signal<Roles | null>(null);
   idUser = signal<number | null>(null);
+  recursoSeleccionado = signal<any | null>(null);
 
   ngOnInit(): void {
     this.cargarData();
@@ -108,6 +110,24 @@ export class RecursoData implements OnInit {
     this.recursoIdForEliminated.set(id);
     const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
     if (check) check.checked = true;
+  }
+// se aplasta y veo mas de la lista de los recursos que llame get id 
+  verDetalles(id: number) {
+    this.recursoServicio.getRecursoPorId(id).subscribe((recurso) => {
+      const recursoCompleto = {
+        ...recurso,
+        tipoRecursoNombre: this.recursos().find(r => r.id === id)?.tipoRecursoNombre || 'Sin tipo'
+      };
+      this.recursoSeleccionado.set(recursoCompleto);
+      const modal = document.getElementById('modal-detalle-recurso') as HTMLDialogElement;
+      if (modal) modal.showModal();
+    });
+  }
+  
+  cerrarDetalles() {
+    const modal = document.getElementById('modal-detalle-recurso') as HTMLDialogElement;
+    if (modal) modal.close();
+    this.recursoSeleccionado.set(null);
   }
 
   modalStatusSuccess() {
