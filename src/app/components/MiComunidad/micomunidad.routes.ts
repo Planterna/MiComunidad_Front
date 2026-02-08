@@ -6,6 +6,8 @@ import { NotFoundPage } from './not-found-page/not-found-page';
 import { ReservaFormulario } from './reservas-crud/reserva-formulario/reserva-formulario';
 import { ReservaVista } from './reservas-crud/reserva-vista/reserva-vista';
 import { PerfilComponent } from './usuario-crud/perfil/perfil';
+import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
 
 import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
 import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
