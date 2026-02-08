@@ -7,6 +7,9 @@ import { ReservaFormulario } from './reservas-crud/reserva-formulario/reserva-fo
 import { ReservaVista } from './reservas-crud/reserva-vista/reserva-vista';
 import { PerfilComponent } from './usuario-crud/perfil/perfil';
 
+import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
+
 export const miComunidadRoutes: Routes = [
   {
     path: '',
@@ -14,32 +17,50 @@ export const miComunidadRoutes: Routes = [
     children: [
       {
         path: '',
-        component: HomePage,   
+        component: HomePage,
       },
+
+      // RESERVAS
       {
         path: 'reserva',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaVista,
       },
       {
         path: 'reserva/formulario',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaFormulario,
       },
       {
         path: 'reserva/formulario/:id',
         canActivate: [AuthGuard],
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         component: ReservaFormulario,
       },
       {
-        path: 'recurso',
-        component: NotFoundPage,
+        path: 'historial-uso',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
+        component: HistorialUsoVista,
       },
       {
-        path: 'historial-uso',
+        path: 'historial-uso/formulario',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
+        component: HistorialUsoFormulario,
+      },
+      {
+        path: 'historial-uso/formulario/:id',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
+        component: HistorialUsoFormulario,
+      },
+
+      // OTROS
+      {
+        path: 'recurso',
         component: NotFoundPage,
       },
       {
@@ -50,15 +71,18 @@ export const miComunidadRoutes: Routes = [
         path: 'user',
         component: NotFoundPage,
       },
+
+      // PERFIL
       {
         path: 'perfil',
         component: PerfilComponent,
-        data: {roles: ['Vecino' ]},
+        data: { roles: ['Vecino'] },
         canActivate: [AuthGuard],
       },
+
       {
         path: 'not-found',
-        component: NotFoundPage
+        component: NotFoundPage,
       },
       {
         path: '**',

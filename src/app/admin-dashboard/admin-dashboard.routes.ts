@@ -6,6 +6,8 @@ import { ReservaData } from '../components/MiComunidad/reservas-crud/reserva-dat
 import { ReservaFormulario } from '../components/MiComunidad/reservas-crud/reserva-formulario/reserva-formulario';
 import { PerfilComponent } from '../components/MiComunidad/usuario-crud/perfil/perfil';
 import { UsuariosComponent } from '../components/MiComunidad/usuario-crud/usuario-tabla/usuario-tabla';
+import { HistorialUsoVista } from '../components/MiComunidad/historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from '../components/MiComunidad/historial-uso/historial_uso-formualrio/historialuso-formulario';
 
 export const adminDashboardRoutes: Routes = [
   {
@@ -43,6 +45,19 @@ export const adminDashboardRoutes: Routes = [
       //   path: 'recurso',
       //   component: RecursosAdmin,
       // },
+      {
+  path: 'historial',
+  component: HistorialUsoVista,
+},
+{
+  path: 'historial/formulario',
+  component: HistorialUsoFormulario,
+},
+{
+  path: 'historial/formulario/:id',
+  component: HistorialUsoFormulario,
+},
+
       {
         path: '**',
         redirectTo: 'dashboard',
