@@ -11,6 +11,9 @@ import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio
 import { RecursoVista } from './recursos-crud/recurso-vista/recurso-vista';
 import { RecursoFormulario } from './recursos-crud/recurso-formulario/recurso-formulario';
 
+import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
+
 export const miComunidadRoutes: Routes = [
   {
     path: '',
@@ -20,6 +23,8 @@ export const miComunidadRoutes: Routes = [
         path: '',
         component: HomePage,
       },
+
+      // RESERVAS
       {
         path: 'reserva',
         canActivate: [AuthGuard],
@@ -58,14 +63,20 @@ export const miComunidadRoutes: Routes = [
       },
       {
         path: 'historial-uso',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
         component: HistorialUsoVista,
       },
       {
         path: 'historial-uso/formulario',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
         component: HistorialUsoFormulario,
       },
       {
         path: 'historial-uso/formulario/:id',
+        canActivate: [AuthGuard],
+        data: { roles: ['Vecino'] },
         component: HistorialUsoFormulario,
       },
       {
@@ -76,12 +87,15 @@ export const miComunidadRoutes: Routes = [
         path: 'user',
         component: NotFoundPage,
       },
+
+      // PERFIL
       {
         path: 'perfil',
         component: PerfilComponent,
         data: { roles: ['Vecino'] },
         canActivate: [AuthGuard],
       },
+
       {
         path: 'not-found',
         component: NotFoundPage,

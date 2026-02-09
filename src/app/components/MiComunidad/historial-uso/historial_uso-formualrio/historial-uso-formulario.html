@@ -1,27 +1,46 @@
 <div class="max-w-4xl mx-auto mt-20 bg-base-100 shadow-xl rounded-xl p-8">
+
   <h2 class="text-4xl font-bold text-center mb-8 text-primary">
-    Nuevo Registro de Uso
+    {{ id ? 'Editar Registro de Uso' : 'Nuevo Registro de Uso' }}
   </h2>
 
-  <form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-1 md:grid-cols-2 gap-7">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="guardar()"
+    class="grid grid-cols-1 md:grid-cols-2 gap-7"
+    novalidate
+  >
 
     <!-- USUARIO -->
     <label class="form-control w-full">
       <span class="label-text">Usuario</span>
-      <select
-        class="select select-bordered w-full"
-        formControlName="usuarioId"
-        [class.select-error]="isInvalid('usuarioId')"
-      >
-        <option value="">Seleccione un usuario</option>
-        <option *ngFor="let u of usuarios" [value]="u.id">
-              {{ u.nombres }} {{ u.apellidos }}
-        </option>
 
-      </select>
-      <span class="text-error text-sm" *ngIf="isInvalid('usuarioId')">
-        El usuario es obligatorio
-      </span>
+      <!-- Admin y Encargado: select -->
+      <ng-container *ngIf="!esVecino; else usuarioFijo">
+        <select
+          class="select select-bordered w-full"
+          formControlName="usuarioId"
+          [class.select-error]="isInvalid('usuarioId')"
+        >
+          <option value="">Seleccione un usuario</option>
+          <option *ngFor="let u of usuarios" [value]="u.id">
+            {{ u.nombres }} {{ u.apellidos }}
+          </option>
+        </select>
+
+        <span class="text-error text-sm" *ngIf="isInvalid('usuarioId')">
+          El usuario es obligatorio
+        </span>
+      </ng-container>
+
+      <!-- Vecino: usuario fijo -->
+      <ng-template #usuarioFijo>
+        <input
+          class="input input-bordered w-full"
+          [value]="nombreUsuarioVecino"
+          readonly
+        />
+      </ng-template>
     </label>
 
     <!-- FECHA -->
@@ -106,27 +125,27 @@
       <textarea class="textarea textarea-bordered w-full" formControlName="notas"></textarea>
     </label>
 
-    <!-- ACTIVO -->
-    <div class="flex items-center gap-3 col-span-full">
+    <!-- ACTIVO solo admin y encargado -->
+    <div class="flex items-center gap-3 col-span-full" *ngIf="!esVecino">
       <input type="checkbox" class="checkbox checkbox-primary" formControlName="activo">
       <span class="label-text">Activo</span>
     </div>
 
     <!-- BOTONES -->
     <div class="flex justify-between pt-6 col-span-full">
-      <a routerLink="/historial-uso" class="btn btn-error">Regresar</a>
-     <button type="submit" class="btn btn-primary">
-  Guardar
-</button>
-
+      <button type="button" class="btn btn-error" (click)="regresar()">Regresar</button>
+      <button type="submit" class="btn btn-primary">Guardar</button>
     </div>
+
   </form>
 
-  <!-- MODAL -->
+  <!-- MODAL (YA NO VACIO) -->
   <app-modals-alert
-    [modalId]="modalId"
-    [titulo]="modalEstado === 'success' ? 'Registro guardado' : 'Error'"
-    [data]="modalEstado"
-    (confirmar)="irListado()">
+    [modalId]="modalId()"
+    [titulo]="modalTitulo()"
+    [data]="modalTipo()"
+    (confirmar)="confirmarAccion()"
+  >
   </app-modals-alert>
+
 </div>

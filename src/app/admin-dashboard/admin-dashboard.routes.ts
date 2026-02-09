@@ -8,6 +8,8 @@ import { PerfilComponent } from '../components/MiComunidad/usuario-crud/perfil/p
 import { UsuariosComponent } from '../components/MiComunidad/usuario-crud/usuario-tabla/usuario-tabla';
 import { RecursoData } from '../components/MiComunidad/recursos-crud/recurso-data/recurso-data';
 import { RecursoFormulario } from '../components/MiComunidad/recursos-crud/recurso-formulario/recurso-formulario';
+import { HistorialUsoVista } from '../components/MiComunidad/historial-uso/historial-uso-vista/historialuso_vista';
+import { HistorialUsoFormulario } from '../components/MiComunidad/historial-uso/historial_uso-formualrio/historialuso-formulario';
 
 export const adminDashboardRoutes: Routes = [
   {
@@ -52,6 +54,19 @@ export const adminDashboardRoutes: Routes = [
         path: 'usuario',
         component: UsuariosComponent,
       },
+      {
+  path: 'historial',
+  component: HistorialUsoVista,
+},
+{
+  path: 'historial/formulario',
+  component: HistorialUsoFormulario,
+},
+{
+  path: 'historial/formulario/:id',
+  component: HistorialUsoFormulario,
+},
+
       {
         path: '**',
         redirectTo: 'dashboard',

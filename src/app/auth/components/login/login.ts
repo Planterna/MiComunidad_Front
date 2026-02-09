@@ -38,13 +38,14 @@ export class LoginComponent {
         this.showSuccess('Inicio de sesión exitoso');
 
         setTimeout(() => {
-          const rol = this.auth.getRole();
+          const rol = (this.auth.getRole() ?? '').toString().trim();
 
-          if (rol === 'Administrador') {
-            this.router.navigate(['/admin/dashboard']);
-          } else {
-            this.router.navigate(['/']);
-          }
+if (rol === 'Administrador' || rol === 'Encargado') {
+  this.router.navigate(['/admin/dashboard']);
+} else {
+  this.router.navigate(['/']);
+}
+
         }, 1200);
       },
       error: () => {
