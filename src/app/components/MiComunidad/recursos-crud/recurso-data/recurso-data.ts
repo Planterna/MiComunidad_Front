@@ -28,6 +28,7 @@ export class RecursoData implements OnInit {
   rolUser = signal<Roles | null>(null);
   idUser = signal<number | null>(null);
   recursoSeleccionado = signal<any | null>(null);
+  filtroActivo = signal<string>('');
 
   ngOnInit(): void {
     this.cargarData();
@@ -93,6 +94,7 @@ export class RecursoData implements OnInit {
 
   FiltarDato(event: any) {
     const texto = event.target.value.trim();
+    this.filtroActivo.set(texto);
 
     if (texto === '') {
       this.cargarData();
@@ -111,7 +113,7 @@ export class RecursoData implements OnInit {
     const check = document.getElementById(`${this.modalId}`) as HTMLInputElement;
     if (check) check.checked = true;
   }
-// se aplasta y veo mas de la lista de los recursos que llame get id 
+// se aplasta y veo mas de la lista de los recursos que llame get Id
   verDetalles(id: number) {
     this.recursoServicio.getRecursoPorId(id).subscribe((recurso) => {
       const recursoCompleto = {
