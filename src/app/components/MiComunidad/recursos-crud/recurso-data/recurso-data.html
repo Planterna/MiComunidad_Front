@@ -22,7 +22,7 @@
     }
   </div>
 
-  <!-- Filtro de estado minimalista con tabs -->
+
   <div class="flex w-full font-montserrat justify-center items-center m-auto mb-6">
     <div role="tablist" class="tabs tabs-boxed bg-base-200">
       <a 
@@ -115,7 +115,6 @@
             </span>
           </div>
 
-          <!-- Botones de acción para Admin y Encargado -->
           @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
             <div class="card-actions justify-center mt-4 gap-2">
               <button
