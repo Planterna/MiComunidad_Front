@@ -11,8 +11,6 @@ import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio
 import { RecursoVista } from './recursos-crud/recurso-vista/recurso-vista';
 import { RecursoFormulario } from './recursos-crud/recurso-formulario/recurso-formulario';
 
-import { HistorialUsoVista } from './historial-uso/historial-uso-vista/historialuso_vista';
-import { HistorialUsoFormulario } from './historial-uso/historial_uso-formualrio/historialuso-formulario';
 
 export const miComunidadRoutes: Routes = [
   {
