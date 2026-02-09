@@ -16,7 +16,7 @@ import { AuthService } from '../../../../services/auth.service';
 @Component({
   selector: 'app-historial-uso-formulario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ModalsAlert],
+  imports: [CommonModule, ReactiveFormsModule, ModalsAlert],
   templateUrl: './historial-uso-formulario.html',
 })
 export class HistorialUsoFormulario implements OnInit {
