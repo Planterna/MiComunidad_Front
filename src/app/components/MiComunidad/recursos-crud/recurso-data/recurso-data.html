@@ -22,15 +22,45 @@
     }
   </div>
 
-  <!-- Filtro de estado -->
-  <div class="flex w-full font-montserrat justify-center items-center m-auto mb-4">
-    <div class="font-medium">
-      <select class="select select-primary w-full max-w-xs" (input)="FiltarDato($event)">
-        <option value="" selected>Todos los Estados</option>
-        <option value="Disponible">Disponible</option>
-        <option value="Ocupado">Ocupado</option>
-        <option value="Mantenimiento">Mantenimiento</option>
-      </select>
+  <!-- Filtro de estado minimalista con tabs -->
+  <div class="flex w-full font-montserrat justify-center items-center m-auto mb-6">
+    <div role="tablist" class="tabs tabs-boxed bg-base-200">
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === ''"
+        [class.font-semibold]="filtroActivo() === ''"
+        (click)="FiltarDato({target: {value: ''}})"
+      >
+        Todos
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Disponible'"
+        [class.font-semibold]="filtroActivo() === 'Disponible'"
+        (click)="FiltarDato({target: {value: 'Disponible'}})"
+      >
+        Disponible
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Ocupado'"
+        [class.font-semibold]="filtroActivo() === 'Ocupado'"
+        (click)="FiltarDato({target: {value: 'Ocupado'}})"
+      >
+        Ocupado
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Mantenimiento'"
+        [class.font-semibold]="filtroActivo() === 'Mantenimiento'"
+        (click)="FiltarDato({target: {value: 'Mantenimiento'}})"
+      >
+        Mantenimiento
+      </a>
     </div>
   </div>
 
@@ -87,10 +117,10 @@
 
           <!-- Botones de acción para Admin y Encargado -->
           @if (rolUser() === 'Administrador' || rolUser() === 'Encargado') {
-            <div class="card-actions justify-center mt-4">
+            <div class="card-actions justify-center mt-4 gap-2">
               <button
                 routerLink="formulario/{{ recurso.id }}"
-                class="btn btn-circle btn-outline"
+                class="btn btn-sm btn-outline border-gray-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400 gap-1"
                 title="Editar"
               >
                 <svg
@@ -98,22 +128,18 @@
                   width="16"
                   height="16"
                   fill="currentColor"
-                  class="bi bi-pencil-square"
                   viewBox="0 0 16 16"
                 >
                   <path
-                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
                   />
                 </svg>
+                Editar
               </button>
               
               @if (recurso.estado !== 'Disponible') {
                 <button
-                  class="btn btn-circle btn-outline btn-success"
+                  class="btn btn-sm btn-outline border-gray-300 text-green-600 hover:bg-green-50 hover:border-green-400 gap-1"
                   (click)="activarData(recurso.id)"
                   title="Marcar como Disponible"
                 >
@@ -122,37 +148,31 @@
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-check-circle"
                     viewBox="0 0 16 16"
                   >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path
-                      d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"
-                    />
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
                   </svg>
+                  Activar
                 </button>
               }
               
               @if (rolUser() === 'Administrador') {
                 <button
-                  class="btn btn-circle btn-outline btn-error"
+                  class="btn btn-sm btn-outline border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-400 gap-1"
                   (click)="abrirConfirmacion(recurso.id)"
                   title="Eliminar"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
                   </svg>
+                  Eliminar
                 </button>
               }
             </div>
