@@ -22,15 +22,45 @@
     }
   </div>
 
-  <!-- Filtro de estado -->
-  <div class="flex w-full font-montserrat justify-center items-center m-auto mb-4">
-    <div class="font-medium">
-      <select class="select select-primary w-full max-w-xs" (input)="FiltarDato($event)">
-        <option value="" selected>Todos los Estados</option>
-        <option value="Disponible">Disponible</option>
-        <option value="Ocupado">Ocupado</option>
-        <option value="Mantenimiento">Mantenimiento</option>
-      </select>
+  <!-- Filtro de estado minimalista con tabs -->
+  <div class="flex w-full font-montserrat justify-center items-center m-auto mb-6">
+    <div role="tablist" class="tabs tabs-boxed bg-base-200">
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === ''"
+        [class.font-semibold]="filtroActivo() === ''"
+        (click)="FiltarDato({target: {value: ''}})"
+      >
+        Todos
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Disponible'"
+        [class.font-semibold]="filtroActivo() === 'Disponible'"
+        (click)="FiltarDato({target: {value: 'Disponible'}})"
+      >
+        Disponible
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Ocupado'"
+        [class.font-semibold]="filtroActivo() === 'Ocupado'"
+        (click)="FiltarDato({target: {value: 'Ocupado'}})"
+      >
+        Ocupado
+      </a>
+      <a 
+        role="tab" 
+        class="tab"
+        [class.bg-white]="filtroActivo() === 'Mantenimiento'"
+        [class.font-semibold]="filtroActivo() === 'Mantenimiento'"
+        (click)="FiltarDato({target: {value: 'Mantenimiento'}})"
+      >
+        Mantenimiento
+      </a>
     </div>
   </div>
 
