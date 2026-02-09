@@ -28,6 +28,7 @@ export class RecursoData implements OnInit {
   rolUser = signal<Roles | null>(null);
   idUser = signal<number | null>(null);
   recursoSeleccionado = signal<any | null>(null);
+  filtroActivo = signal<string>('');
 
   ngOnInit(): void {
     this.cargarData();
@@ -93,6 +94,7 @@ export class RecursoData implements OnInit {
 
   FiltarDato(event: any) {
     const texto = event.target.value.trim();
+    this.filtroActivo.set(texto);
 
     if (texto === '') {
       this.cargarData();
